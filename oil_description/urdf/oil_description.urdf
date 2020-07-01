@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.0-0-g9aa0fdb  Build Version: 1.5.7004.21443
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="oil_description">
+  <link
+    name="base_link">
+    <!-- <inertial>
+      <origin
+        xyz="4.12602907480409E-07 -3.10617298204974E-07 0.0712599778945153"
+        rpy="0 0 0" />
+      <mass
+        value="6.78936360044673" />
+      <inertia
+        ixx="0.0953334118462338"
+        ixy="1.10364074354538E-06"
+        ixz="-1.6924287473749E-07"
+        iyy="0.0953288626670654"
+        iyz="2.11141199054294E-08"
+        izz="0.156459291725264" />
+    </inertial> -->
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="-1.71990891676971E-05 -0.0294811073190644 0.172812033953378"
+        rpy="0 0 0" />
+      <mass
+        value="5.2406136733608" />
+      <inertia
+        ixx="0.0648292633354279"
+        ixy="-1.15352455713251E-06"
+        ixz="-4.40051546579226E-07"
+        iyy="0.0818952183802923"
+        iyz="0.00894937370819228"
+        izz="0.0767672187180154" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.2105"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.4"
+      upper="0.4"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="8.38779527037309E-05 0.143900900784665 0.00259683139342703"
+        rpy="0 0 0" />
+      <mass
+        value="6.88939404184731" />
+      <inertia
+        ixx="0.182727261215811"
+        ixy="1.74508648029479E-05"
+        ixz="-4.46433331626517E-05"
+        iyy="0.134885419518281"
+        iyz="0.036716343715663"
+        izz="0.168241030599921" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 -0.2095 0.3005"
+      rpy="1.5708 0 0" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.500"
+      upper="1.500"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="-1.71788962591073E-05 -0.0294810761514921 0.172812076116232"
+        rpy="0 0 0" />
+      <mass
+        value="5.2406150592868" />
+      <inertia
+        ixx="0.0648292604284833"
+        ixy="-1.15449795834136E-06"
+        ixz="-4.4247230645346E-07"
+        iyy="0.0818952272251022"
+        iyz="0.00894937477771033"
+        izz="0.0767672282110678" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="0 0.4805 -0.2095"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="link2" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.0"
+      upper="3.0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="8.37125518096271E-05 0.14390098810799 0.00259677297824296"
+        rpy="0 0 0" />
+      <mass
+        value="6.88938664927084" />
+      <inertia
+        ixx="0.18272730153848"
+        ixy="1.73693555884047E-05"
+        ixz="-4.45660513919948E-05"
+        iyy="0.134885285598236"
+        iyz="0.0367163577443013"
+        izz="0.168240903239268" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0 -0.2095 0.3005"
+      rpy="1.5708 0 0" />
+    <parent
+      link="link3" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.500"
+      upper="1.500"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="-1.71828041429507E-05 -0.0294810808679672 0.172812069245769"
+        rpy="0 0 0" />
+      <mass
+        value="5.24061482822974" />
+      <inertia
+        ixx="0.0648292617532774"
+        ixy="-1.15391904203948E-06"
+        ixz="-4.41788936027083E-07"
+        iyy="0.081895224184908"
+        iyz="0.00894937411761489"
+        izz="0.0767672242965342" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0 0.4805 -0.2095"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="link5" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.0"
+      upper="3.0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link6">
+    <inertial>
+      <origin
+        xyz="8.37609129031107E-05 0.143900936952716 0.00259683399496513"
+        rpy="0 0 0" />
+      <mass
+        value="6.88938989622059" />
+      <inertia
+        ixx="0.18272729754521"
+        ixy="1.75162807950201E-05"
+        ixz="-4.4684612929509E-05"
+        iyy="0.134885472534082"
+        iyz="0.0367163483643782"
+        izz="0.168241136377011" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="0 -0.2095 0.3005"
+      rpy="1.5708 0 0" />
+    <parent
+      link="link5" />
+    <child
+      link="link6" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.500"
+      upper="1.500"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link7">
+    <inertial>
+      <origin
+        xyz="-7.68425293345267E-10 2.49905878584657E-10 0.0616861346519899"
+        rpy="0 0 0" />
+      <mass
+        value="1.18274776395572" />
+      <inertia
+        ixx="0.00947912731189771"
+        ixy="-1.3799925474558E-06"
+        ixz="-2.41084411319739E-11"
+        iyy="0.0094866683690848"
+        iyz="4.95597423950793E-11"
+        izz="0.0178779894483615" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oil_description/meshes/link7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint7"
+    type="revolute">
+    <origin
+      xyz="0 0.4805 -0.2095"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="link6" />
+    <child
+      link="link7" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.5"
+      upper="3.5"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <!-- flange -->
+  <link
+    name="ee_link">
+  </link>
+  
+  <joint
+    name="ee_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0.0815"
+      rpy="0 0 0" />
+    <parent
+      link="link7" />
+    <child
+      link="ee_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <!-- abutment -->
+  <link
+    name="abutment_frame">
+  </link>
+  
+  <joint
+    name="abutment_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0.05"
+      rpy="0 0 0" />
+    <parent
+      link="ee_link" />
+    <child
+      link="abutment_frame" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

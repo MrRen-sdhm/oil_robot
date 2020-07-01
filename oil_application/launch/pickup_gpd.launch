@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="fake" default="false" />
+    <arg name="use_service" default="true" />
+ 
+    <!-- start the Realsense and gpd_pointnet server -->
+    <include if="$(arg use_service)" file="$(find gpd_ros)/launch/gpd_server.launch" >
+        <arg name="rviz" value="false" />
+    </include>
+
+    <!-- start the Realsense and gpd_pointnet node -->
+    <include unless="$(arg use_service)" file="$(find gpd_ros)/launch/gpd_node.launch" >
+        <arg name="rviz" value="false" />
+    </include>
+
+    <!-- start the robot-->
+    <include file="$(find oil_application)/launch/oil_bringup.launch" >
+        <arg name="fake" value="$(arg fake)" />
+        <arg name="rviz" value="false" />
+        <arg name="hmi" value="true" />
+    </include>
+    
+    <!-- publish tf frome ee_link frame to camera_color_optical frame-->
+    <include file="$(find oil_application)/calibration/launch/publish_static_tf.launch" />
+
+    <!-- start gripper driver -->
+    <node name="yinshi_driver" pkg="yinshi_driver" type="yinshi_driver" respawn="true" output="screen" />
+
+    <!-- start the rviz -->
+    <node if="$(arg use_service)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" 
+        args="-d $(find oil_application)/launch/cfg/pickup_gpd_server.rviz" output="screen" />
+    <node unless="$(arg use_service)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" 
+        args="-d $(find oil_application)/launch/cfg/pickup_gpd_node.rviz" output="screen" />
+
+</launch>

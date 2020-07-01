@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>  
+    <arg name="use_hand" default="false"/>
+    <arg name="show_pose_info" default="true"/>
+    <arg name="show_traj_info" default="true"/>
+
+    <!-- robot_ip: IP-address of the robot's socket-messaging server -->
+    <!-- <arg name="robot_ip" doc="IP of the controller" /> -->
+
+    <!-- robot driver -->
+    <node name="oil_driver" pkg="oil_driver" type="oil_driver" output="screen">
+        <param name="with_hand" value="$(arg use_hand)" />
+        <param name="show_pose_info" value="$(arg show_pose_info)" />
+        <param name="show_traj_info" value="$(arg show_traj_info)" />
+    </node>
+</launch>

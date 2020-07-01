@@ -1,0 +1,3128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>809</width>
+    <height>571</height>
+   </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>Oil HMI</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>811</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(85, 255, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>模拟对接试验</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>330</y>
+     <width>411</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="label_1_4">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>421</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(217, 217, 217);</string>
+    </property>
+    <property name="text">
+     <string>状态信息栏</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="listWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>391</width>
+      <height>181</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>140</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>退出对接</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>140</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>执行对接</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>200</y>
+      <width>221</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>退出到对接通道入口</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>90</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>初始化</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_1_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>261</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(217, 217, 217);</string>
+    </property>
+    <property name="text">
+     <string>对接控制</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>90</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>40</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>1号目标点</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>2号目标点</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comboBox3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>102</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <item>
+     <property name="text">
+      <string>阶段模式</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>连续模式</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame_3">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>60</y>
+     <width>361</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QPushButton" name="backHomeButton">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>450</y>
+      <width>96</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>96</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>120</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Back Home</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_33">
+    <property name="geometry">
+     <rect>
+      <x>17</x>
+      <y>374</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Speed 50%</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stopButton">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>450</y>
+      <width>120</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>200</width>
+      <height>200</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Mono</family>
+      <pointsize>16</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Emergency</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="horizontalSlider">
+    <property name="geometry">
+     <rect>
+      <x>107</x>
+      <y>377</y>
+      <width>234</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="minimum">
+     <number>10</number>
+    </property>
+    <property name="maximum">
+     <number>99</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+    <property name="sliderPosition">
+     <number>50</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::NoTicks</enum>
+    </property>
+    <property name="tickInterval">
+     <number>8</number>
+    </property>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>339</width>
+      <height>338</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>339</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>10</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::ElideNone</enum>
+    </property>
+    <property name="usesScrollButtons">
+     <bool>true</bool>
+    </property>
+    <property name="documentMode">
+     <bool>false</bool>
+    </property>
+    <property name="tabsClosable">
+     <bool>false</bool>
+    </property>
+    <property name="movable">
+     <bool>false</bool>
+    </property>
+    <property name="tabBarAutoHide">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="tab1_2">
+     <attribute name="title">
+      <string>         MoveJ        </string>
+     </attribute>
+     <widget class="QPushButton" name="radDegButton_1">
+      <property name="geometry">
+       <rect>
+        <x>67</x>
+        <y>269</y>
+        <width>69</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>deg</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>229</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint7 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton3_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>78</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_step">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>266</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Step:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton5_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>154</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton6_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>192</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>153</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint5 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton4_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>116</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox">
+      <property name="geometry">
+       <rect>
+        <x>212</x>
+        <y>268</y>
+        <width>85</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>90.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>60.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>30.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>10.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>5.00 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1.00 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.50 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.25 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.05 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1.60 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.80 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.40 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.20 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.05 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.02 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.01 rad</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QPushButton" name="pushButton5_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>154</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton6_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>192</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton1_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>2</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton7_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>230</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>191</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint6 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton1_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>2</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton7_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>230</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>115</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint4 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton2_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>40</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton2_2">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>40</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton4_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>116</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>39</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint2 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>77</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint3 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_1">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>1</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint1 ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton3_1">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>78</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_unit">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>266</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Unit:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab2_2">
+     <attribute name="title">
+      <string>        MoveL      </string>
+     </attribute>
+     <widget class="QPushButton" name="pushButton7_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>235</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton5_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>156</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_24">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>269</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Unit:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_step3_2">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>269</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Step:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton5_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>156</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton2_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>40</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton6_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>195</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton7_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>235</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton6_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>195</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="radDegButton_2">
+      <property name="geometry">
+       <rect>
+        <x>67</x>
+        <y>272</y>
+        <width>69</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>deg</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton1_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>2</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton1_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>2</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>1</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose X ( 0.000 m )</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_rpy">
+      <property name="geometry">
+       <rect>
+        <x>212</x>
+        <y>271</y>
+        <width>85</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>60.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>30.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>10.0 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>5.00 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1.00 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.50 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 deg</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.80 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.40 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.20 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.05 rad</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.02 rad</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>77</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose Z ( 0.000 m )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton3_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>78</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton3_4">
+      <property name="geometry">
+       <rect>
+        <x>246</x>
+        <y>78</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>156</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose R ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton2_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>40</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>39</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose Y ( 0.000 m )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>194</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose P ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_14">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>232</y>
+        <width>143</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pose Y ( 0.000 rad )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_step2_2">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>113</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Step:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_32">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>113</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Unit:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="mCmButton_1">
+      <property name="geometry">
+       <rect>
+        <x>67</x>
+        <y>116</y>
+        <width>69</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>m</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_xyz">
+      <property name="geometry">
+       <rect>
+        <x>212</x>
+        <y>115</y>
+        <width>85</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>0.20 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.15 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.05 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.02 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.01 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>20.0 cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>15.0 cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>10.0 cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>5.00 cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2.00 cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1.00 cm</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="Line" name="line_2">
+      <property name="geometry">
+       <rect>
+        <x>32</x>
+        <y>143</y>
+        <width>265</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>        MoveE      </string>
+     </attribute>
+     <widget class="QComboBox" name="comboBox_ee">
+      <property name="geometry">
+       <rect>
+        <x>165</x>
+        <y>50</y>
+        <width>85</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>0.01 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.02 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.05 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.10 m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.20 m</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="label_step2_3">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>48</y>
+        <width>81</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Move Step:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="MoveEEZ_Button2">
+      <property name="geometry">
+       <rect>
+        <x>166</x>
+        <y>160</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="MoveEEZ_Button1">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>160</y>
+        <width>85</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_step2_4">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>90</y>
+        <width>91</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Speed Scale:</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_ee_scale">
+      <property name="geometry">
+       <rect>
+        <x>165</x>
+        <y>90</y>
+        <width>85</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>6</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>0.9</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.8</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.7</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.6</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.5</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.3</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0.1</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="setHomeButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>403</y>
+      <width>96</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>96</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>120</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Set Home</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>450</y>
+      <width>96</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>96</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>120</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Save States</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="powerButton">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>403</y>
+      <width>120</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>200</width>
+      <height>200</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Mono</family>
+      <pointsize>16</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Power OFF</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="resetButton">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>403</y>
+      <width>96</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>96</width>
+      <height>30</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>120</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Reset Arm</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_1_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>361</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(217, 217, 217);</string>
+    </property>
+    <property name="text">
+     <string>机械臂控制</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame_4">
+   <property name="geometry">
+    <rect>
+     <x>284</x>
+     <y>60</y>
+     <width>141</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="label_1_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(217, 217, 217);</string>
+    </property>
+    <property name="text">
+     <string>升降机构控制</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>80</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>上升</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>116</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>下降</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox1">
+    <property name="geometry">
+     <rect>
+      <x>52</x>
+      <y>42</y>
+      <width>74</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <item>
+     <property name="text">
+      <string>10cm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>5cm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>2cm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1cm</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_1_6">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>32</y>
+      <width>31</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>步进</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>190</y>
+      <width>61</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_1_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>192</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>位置</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="lift_back_home_button">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>150</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>回零</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="lift_pose_button">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>225</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>修改位置</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>powerButton</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>power()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveButton</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>save_state()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>44</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>slide_moved()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>165</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetButton</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>reset_arm()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>setHomeButton</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>set_home()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>backHomeButton</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>back_home()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>380</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopButton</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>emergency_stop()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint1_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>18</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint1_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>50</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint1_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint1_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint2_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>42</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint2_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint2_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint2_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint3_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint3_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint3_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>134</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint3_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>61</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton4_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint4_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton4_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint4_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton4_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint4_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton4_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint4_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint5_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint5_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint5_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>222</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint5_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint6_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>278</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint6_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint6_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint6_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint7_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_1</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint7_minus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>joint7_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_2</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>joint7_plus_done()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>x_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton1_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>x_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>y_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>103</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>y_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>z_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton3_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>z_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>roll_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton5_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>roll_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>pitch_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton6_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>pitch_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_3</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>yaw_minus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton7_4</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>yaw_plus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_xyz</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>movexyz_step_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>664</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>334</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_rpy</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>moverpy_step_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>664</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>442</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox1</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>movej_step_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>466</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radDegButton_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>movej_rad_deg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radDegButton_2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>movel_rad_deg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>396</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mCmButton_1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>movel_m_cm()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lift_back_home_button</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>lift_back_home()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>384</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>431</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lift_pose_button</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>lift_pose_modify()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>369</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>375</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MoveEEZ_Button1</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>move_e_backward()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>555</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>808</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MoveEEZ_Button2</sender>
+   <signal>pressed()</signal>
+   <receiver>Form</receiver>
+   <slot>move_e_forward()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>669</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>807</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_ee_scale</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>Form</receiver>
+   <slot>move_ee_scale_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>668</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>808</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>joint1_minus()</slot>
+  <slot>joint1_plus()</slot>
+  <slot>joint2_minus()</slot>
+  <slot>joint2_plus()</slot>
+  <slot>joint3_minus()</slot>
+  <slot>joint3_plus()</slot>
+  <slot>joint4_minus()</slot>
+  <slot>joint4_plus()</slot>
+  <slot>joint5_minus()</slot>
+  <slot>joint5_plus()</slot>
+  <slot>joint6_minus()</slot>
+  <slot>joint6_plus()</slot>
+  <slot>joint7_minus()</slot>
+  <slot>joint7_plus()</slot>
+  <slot>save_state()</slot>
+  <slot>joint1_minus_done()</slot>
+  <slot>joint2_minus_done()</slot>
+  <slot>joint3_minus_done()</slot>
+  <slot>joint4_minus_done()</slot>
+  <slot>joint5_minus_done()</slot>
+  <slot>joint6_minus_done()</slot>
+  <slot>joint7_minus_done()</slot>
+  <slot>joint1_plus_done()</slot>
+  <slot>joint2_plus_done()</slot>
+  <slot>joint3_plus_done()</slot>
+  <slot>joint4_plus_done()</slot>
+  <slot>joint5_plus_done()</slot>
+  <slot>joint6_plus_done()</slot>
+  <slot>joint7_plus_done()</slot>
+  <slot>slide_moved()</slot>
+  <slot>movej_step_change()</slot>
+  <slot>power()</slot>
+  <slot>set_home()</slot>
+  <slot>back_home()</slot>
+  <slot>reset_arm()</slot>
+  <slot>movej_rad_deg()</slot>
+  <slot>emergency_stop()</slot>
+  <slot>x_minus()</slot>
+  <slot>x_plus()</slot>
+  <slot>y_minus()</slot>
+  <slot>y_plus()</slot>
+  <slot>z_minus()</slot>
+  <slot>z_plus()</slot>
+  <slot>roll_minus()</slot>
+  <slot>roll_plus()</slot>
+  <slot>pitch_minus()</slot>
+  <slot>pitch_plus()</slot>
+  <slot>yaw_minus()</slot>
+  <slot>yaw_plus()</slot>
+  <slot>movexyz_step_change()</slot>
+  <slot>moverpy_step_change()</slot>
+  <slot>movel_rad_deg()</slot>
+  <slot>movel_m_cm()</slot>
+  <slot>lift_back_home()</slot>
+  <slot>textbox_changed()</slot>
+  <slot>lift_pose_modify()</slot>
+  <slot>move_e_forward()</slot>
+  <slot>move_e_backward()</slot>
+  <slot>move_ee_scale_changed()</slot>
+ </slots>
+</ui>
