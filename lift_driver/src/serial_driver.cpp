@@ -187,12 +187,12 @@ int SerialDriver::SetPort(int iBaudRate, int iDataSize, char cParity, int iStopB
         case 'O':                    /*奇校验*/
             newtio.c_cflag |= PARENB;
             newtio.c_cflag |= PARODD;
-            newtio.c_iflag |= (INPCK | ISTRIP);
+            newtio.c_iflag |= INPCK;
             break;
         case 'E':                    /*偶校验*/
             newtio.c_cflag |= PARENB;
             newtio.c_cflag &= (~PARODD);
-            newtio.c_iflag |= (INPCK | ISTRIP);
+            newtio.c_iflag |= INPCK;
             break;
         default:
             /*perror("Don't exist cParity  !");*/

@@ -118,8 +118,8 @@ class MoveGroup(object):
         self.eef_link = eef_link
         self.joint_bounds = joint_bounds
 
-        self.vel_scale = 0.5
-        self.acc_scale = 0.25
+        self.vel_scale = 0.5  # 默认为0.5, 注意HMI中vel_scale初始值的设定
+        self.acc_scale = 0.25  # 默认为0.25
 
         group.set_max_velocity_scaling_factor(self.vel_scale)
         group.set_max_acceleration_scaling_factor(self.acc_scale)

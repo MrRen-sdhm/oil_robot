@@ -3,7 +3,7 @@
 # Author     : Zhenyu Ren
 # E-mail     : rzy.1996@qq.com
 # Description: oil oil hmi implementation use python2 and PyQt5
-# Date       : 09/09/2019 3:07 PM
+# Date       : 06/11/2020
 # File Name  : oil_hmi_pro.py
 
 from __future__ import print_function
@@ -47,7 +47,7 @@ command_arr = Int32MultiArray()  # ROS中自定义的数据类型，保险起见
 command_cnt = 4
 command_arr.data = [0]*command_cnt  # 0:使能 1:复位 2:置零 3:急停, PubThread及主线程按钮函数均会写，须加锁
 
-joint_ctl_arr = [0]*7 # 关节控制标志位, 可弃用
+joint_ctl_arr = [0]*7  # 关节控制标志位, 可弃用
 
 vel_scaling = 0.0  # 速度调整比例
 movej_rad_deg_flag = 1  # 角度显示单位切换标志, 默认为角度
@@ -59,7 +59,7 @@ curr_pose = [0.0]*7  # 当前位置
 movel_axis = None  # MoveL 移动的参考轴
 movel_value = None  # MoveL 移动的距离/角度
 
-move_ee_dis = 0.0  # 末端z轴移动距离
+move_ee_dis = 0.0  # 末端z轴方向移动距离, 有正负
 move_ee_speed_scale = 0.5  # 末端笛卡尔规划速度比例
 
 moveJ = False  # 关节运动标志
@@ -70,8 +70,15 @@ change_vel = False  # 调整速度标志
 
 # 升降机构
 lift_back_home_flag = False  # 升降机构回零点标志
+lift_stop_flag = False  # 升降机构急停标志
 lift_pose_modify_flag = False  # 升降机构抢位置修改按钮
-lift_pose = 0  # 升降机构位置
+lift_aim_pose = 0.0  # 升降机构目标位置
+lift_speed_modify_flag = False  # 升降机构抢速度修改按钮
+lift_speed = 0  # 升降机构速度
+lift_down_flag = False  # 升降机构下降标志
+lift_up_flag = False  # 升降机构上升标志
+lift_step = 50  # 升降机构运动步进，单位mm
+lift_cur_pose = 0.0  # 升降机构当前位置
 
 
 class PubThread(QtCore.QThread):
@@ -111,7 +118,7 @@ class SubThread(QtCore.QThread):
         self.listener = tf.TransformListener()
 
     def run(self):
-        global curr_pose
+        global curr_pose, lift_cur_pose
         r = rospy.Rate(10)  # 10hz
         base_link, ee_link = get_base_ee_link()  # 获取末端坐标系名称
         while not rospy.is_shutdown() and ee_link:
@@ -120,6 +127,9 @@ class SubThread(QtCore.QThread):
                 xyz = position
                 rpy = list(euler_from_quaternion(orientation))
                 curr_pose = xyz + rpy  # 实时获取当前位置
+
+                # 获取升降机构位置
+                lift_cur_pose = lift_pose_client("Pose")
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
 
@@ -149,11 +159,12 @@ class MoveThread(QtCore.QThread):
             exit("[ERROR] Please start the move service!")
 
     def run(self):
-        global moveJ, moveL, moveE, back_home_flag, change_vel
         r = rospy.Rate(50)  # 50hz
         # 运动控制指令发送
         while not rospy.is_shutdown():
             # ##############  机械臂  ################
+            global moveJ, moveL, moveE, back_home_flag, change_vel
+
             if moveJ:  # 关节运动
                 move_to_joint_states(goal_joints)
                 print("[INFO] Go to joint state...")
@@ -164,7 +175,7 @@ class MoveThread(QtCore.QThread):
                 print("[INFO] Go to pose shift...")
                 moveL = False  # 标志复位
 
-            if moveE:  # 末端z轴线性运动
+            if moveE:  # 末端z轴方向线性运动
                 move_ee_z(move_ee_dis, move_ee_speed_scale)
                 print("[INFO] Move ee z..., dis:%f scale:%f" % (move_ee_dis, move_ee_speed_scale))
                 moveE = False
@@ -181,16 +192,70 @@ class MoveThread(QtCore.QThread):
                 change_vel = False  # 标志复位
 
             # ##############  升降机构  ################
-            global lift_back_home_flag, lift_pose_modify_flag, lift_pose
+            global lift_back_home_flag, lift_pose_modify_flag, lift_stop_flag, lift_aim_pose, lift_up_flag, lift_down_flag
+            global lift_speed_modify_flag, lift_speed
+
             if lift_back_home_flag:  # 回零点
                 lift_control_client("Home", None)
                 lift_back_home_flag = False
 
+            if lift_up_flag:
+                print("Lift move up", lift_aim_pose)
+                lift_control_client("MoveUp", lift_step)
+                while True:  # 阻塞到运动完成
+                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
+                        print("Lift stop cmd")
+                        lift_control_client("Stop", None)
+                        lift_stop_flag = False
+
+                    if not lift_status_client("Running"):  # 检查是否运动完成
+                        print("Lift move up done.")
+                        break
+
+                    time.sleep(0.05)
+
+                lift_up_flag = False
+
+            if lift_down_flag:
+                print("Lift move down", lift_aim_pose)
+                lift_control_client("MoveDown", lift_step)
+                while True:  # 阻塞到运动完成
+                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
+                        print("Lift stop cmd")
+                        lift_control_client("Stop", None)
+                        lift_stop_flag = False
+
+                    if not lift_status_client("Running"):  # 检查是否运动完成
+                        print("Lift move down done.")
+                        break
+
+                    time.sleep(0.05)
+
+                lift_down_flag = False
+
+            if lift_speed_modify_flag:  # 修改升降机构速度
+                print("Lift speed modify:", lift_speed)
+                lift_control_client("Speed", lift_speed)
+                lift_speed_modify_flag = False
+
+                time.sleep(0.05)  # 延时后再发送修改位置指令
+
             if lift_pose_modify_flag:  # 修改升降机构位置
-                if 0 < lift_pose < 2400:
-                    print("Lift Move", lift_pose)
-                    lift_control_client("Move", lift_pose)
-                    lift_pose_modify_flag = False
+                print("Lift move abs:", lift_aim_pose)
+                lift_control_client("Move", lift_aim_pose)
+                while True:  # 阻塞到运动完成
+                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
+                        print("Lift stop cmd")
+                        lift_control_client("Stop", None)
+                        lift_stop_flag = False
+
+                    if not lift_status_client("Running"):  # 检查是否运动完成
+                        print("Lift move done.")
+                        break
+
+                    time.sleep(0.05)
+
+                lift_pose_modify_flag = False
 
             r.sleep()
 
@@ -997,19 +1062,49 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
             movel_value = self.rpy_step
 
     # ######################  升降机构相关  #####################
-    def lift_back_home(self):
+    @staticmethod
+    def lift_back_home():
         global lift_back_home_flag
         lift_back_home_flag = True
 
+    @staticmethod
+    def lift_stop():
+        global lift_stop_flag
+        lift_stop_flag = True
+
     def lift_pose_modify(self):
-        global lift_pose_modify_flag, lift_pose
-        lift_pose = int(self.textEdit.toPlainText())
-        print("lift_pose_modify")
-        if lift_pose < 0 or lift_pose > 2400:
-            # print("out of range")
+        global lift_pose_modify_flag, lift_aim_pose
+        lift_aim_pose = int(self.textEdit.toPlainText())
+        print("lift pose modify")
+        if lift_aim_pose < 0 or lift_aim_pose > 2400:
+            print("lift pose out of range")
+            lift_aim_pose = 0
             self.textEdit.setText("00000")
         else:
             lift_pose_modify_flag = True
+
+    def lift_speed_modify(self):
+        global lift_speed_modify_flag, lift_speed
+        lift_speed = int(self.textEdit_lift_speed.toPlainText())
+        print("lift speed modify")
+
+        if lift_speed < 1 or lift_speed > 100:
+            lift_speed = 10
+            print("lift speed out of range")
+            self.textEdit_lift_speed.setText("00010")
+        else:
+            lift_speed_modify_flag = True
+
+    def lift_up(self):
+        global lift_up_flag, lift_step
+        lift_up_flag = True
+        lift_step = self.comboBox_lift_step.currentText()[0:2]
+        print("lift_step:", lift_step)
+
+    def lift_down(self):
+        global lift_down_flag, lift_step
+        lift_down_flag = True
+        lift_step = self.comboBox_lift_step.currentText()[0:2]
 
     # 界面数据刷新
     def update(self):
@@ -1193,6 +1288,11 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
                     self.label_14.setText("Pose Y ( %.2f deg )" % float(curr_pose[5] / pi * 180.0))
                 else:
                     self.label_14.setText("Pose Y ( %.3f deg )" % float(curr_pose[5] / pi * 180.0))
+
+        # 升降机构位置刷新显示
+        global lift_cur_pose
+        self.label_lift_pose.setText("%4d" % int(lift_cur_pose))
+        # print("lift_cur_pose:", lift_cur_pose)
 
 
 if __name__ == "__main__":
