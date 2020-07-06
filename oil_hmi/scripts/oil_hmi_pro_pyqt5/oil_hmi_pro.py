@@ -118,7 +118,7 @@ class SubThread(QtCore.QThread):
         self.listener = tf.TransformListener()
 
     def run(self):
-        global curr_pose, lift_cur_pose
+        global curr_pose, lift_cur_pose, lift_stop_flag
         r = rospy.Rate(10)  # 10hz
         base_link, ee_link = get_base_ee_link()  # 获取末端坐标系名称
         while not rospy.is_shutdown() and ee_link:
@@ -130,6 +130,12 @@ class SubThread(QtCore.QThread):
 
                 # 获取升降机构位置
                 lift_cur_pose = lift_pose_client("Pose")
+                # 升降机构急停指令
+                if lift_stop_flag:  # 急停，因升降机构运动为阻塞函数，不可在MoveThread中发急停指令
+                    lift_stop_flag = False
+                    print("Lift stop cmd")
+                    lift_control_client("Stop", None)
+
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
 
@@ -166,81 +172,59 @@ class MoveThread(QtCore.QThread):
             global moveJ, moveL, moveE, back_home_flag, change_vel
 
             if moveJ:  # 关节运动
+                moveJ = False  # 标志复位
                 move_to_joint_states(goal_joints)
                 print("[INFO] Go to joint state...")
-                moveJ = False  # 标志复位
 
             if moveL:  # 线性运动
+                moveL = False  # 标志复位
                 move_to_pose_shift(movel_axis, movel_value)
                 print("[INFO] Go to pose shift...")
-                moveL = False  # 标志复位
 
             if moveE:  # 末端z轴方向线性运动
+                moveE = False
                 move_ee_z(move_ee_dis, move_ee_speed_scale)
                 print("[INFO] Move ee z..., dis:%f scale:%f" % (move_ee_dis, move_ee_speed_scale))
-                moveE = False
 
             if back_home_flag:  # 回零点
+                back_home_flag = False  # 标志复位
                 move_to_pose_named('home')
                 # 回到零点函数执行完成，无论返回成功与否, 发信号使能回back_home按钮
                 self.back_home_signal.emit()
-                back_home_flag = False  # 标志复位
 
             if change_vel:  # 调整速度
+                change_vel = False  # 标志复位
                 set_vel_scaling(vel_scaling)
                 print ("[INFO] Change speed...")
-                change_vel = False  # 标志复位
 
             # ##############  升降机构  ################
             global lift_back_home_flag, lift_pose_modify_flag, lift_stop_flag, lift_aim_pose, lift_up_flag, lift_down_flag
-            global lift_speed_modify_flag, lift_speed
+            global lift_speed_modify_flag, lift_speed, lift_step
 
             if lift_back_home_flag:  # 回零点
-                lift_control_client("Home", None)
                 lift_back_home_flag = False
+                print("Lift back home cmd", lift_aim_pose)
+                lift_control_client("Home", None)
 
             if lift_up_flag:
-                print("Lift move up", lift_aim_pose)
-                lift_control_client("MoveUp", lift_step)
-                while True:  # 阻塞到运动完成
-                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
-                        print("Lift stop cmd")
-                        lift_control_client("Stop", None)
-                        lift_stop_flag = False
-
-                    if not lift_status_client("Running"):  # 检查是否运动完成
-                        print("Lift move up done.")
-                        break
-
-                    time.sleep(0.05)
-
                 lift_up_flag = False
+                print("Lift move up cmd, step:%dmm" % int(lift_step))
+                lift_control_client("MoveUp", lift_step)  # 此处会阻塞
 
             if lift_down_flag:
-                print("Lift move down", lift_aim_pose)
-                lift_control_client("MoveDown", lift_step)
-                while True:  # 阻塞到运动完成
-                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
-                        print("Lift stop cmd")
-                        lift_control_client("Stop", None)
-                        lift_stop_flag = False
-
-                    if not lift_status_client("Running"):  # 检查是否运动完成
-                        print("Lift move down done.")
-                        break
-
-                    time.sleep(0.05)
-
                 lift_down_flag = False
+                print("Lift move down cmd, aim pose:", lift_aim_pose)
+                lift_control_client("MoveDown", lift_step)  # 此处会阻塞
 
             if lift_speed_modify_flag:  # 修改升降机构速度
+                lift_speed_modify_flag = False
                 print("Lift speed modify:", lift_speed)
                 lift_control_client("Speed", lift_speed)
-                lift_speed_modify_flag = False
 
                 time.sleep(0.05)  # 延时后再发送修改位置指令
 
             if lift_pose_modify_flag:  # 修改升降机构位置
+                lift_pose_modify_flag = False
                 print("Lift move abs:", lift_aim_pose)
                 lift_control_client("Move", lift_aim_pose)
                 while True:  # 阻塞到运动完成
@@ -254,278 +238,6 @@ class MoveThread(QtCore.QThread):
                         break
 
                     time.sleep(0.05)
-
-                lift_pose_modify_flag = False
-
-            r.sleep()
-
-    def stop(self):
-        self.terminate()
-
-
-# FIXME 调试完成后可删除！！！
-class WindowThread(QtCore.QThread):
-    def __init__(self, window_):
-        super(WindowThread, self).__init__()
-        self.window = window_
-
-    def run(self):
-        global movej_rad_deg_flag
-        r = rospy.Rate(2)  # 2hz
-        time.sleep(1)  # 休眠一秒等待界面初始化
-
-        while not rospy.is_shutdown():
-            # print(curr_joints)
-            # 关节角刷新显示
-            if movej_rad_deg_flag is 0:
-                if curr_joints[0] < 0:
-                    self.window.label_1.setText("Joint1 (%.3f rad )" % float(curr_joints[0]))
-                else:
-                    self.window.label_1.setText("Joint1 ( %.3f rad )" % float(curr_joints[0]))
-                if curr_joints[1] < 0:
-                    self.window.label_2.setText("Joint2 (%.3f rad )" % float(curr_joints[1]))
-                else:
-                    self.window.label_2.setText("Joint2 ( %.3f rad )" % float(curr_joints[1]))
-                if curr_joints[2] < 0:
-                    self.window.label_3.setText("Joint3 (%.3f rad )" % float(curr_joints[2]))
-                else:
-                    self.window.label_3.setText("Joint3 ( %.3f rad )" % float(curr_joints[2]))
-                if curr_joints[3] < 0:
-                    self.window.label_4.setText("Joint4 (%.3f rad )" % float(curr_joints[3]))
-                else:
-                    self.window.label_4.setText("Joint4 ( %.3f rad )" % float(curr_joints[3]))
-                if curr_joints[4] < 0:
-                    self.window.label_5.setText("Joint5 (%.3f rad )" % float(curr_joints[4]))
-                else:
-                    self.window.label_5.setText("Joint5 ( %.3f rad )" % float(curr_joints[4]))
-                if curr_joints[5] < 0:
-                    self.window.label_6.setText("Joint6 (%.3f rad )" % float(curr_joints[5]))
-                else:
-                    self.window.label_6.setText("Joint6 ( %.3f rad )" % float(curr_joints[5]))
-                if curr_joints[6] < 0:
-                    self.window.label_7.setText("Joint7 (%.3f rad )" % float(curr_joints[6]))
-                else:
-                    self.window.label_7.setText("Joint7 ( %.3f rad )" % float(curr_joints[6]))
-
-            else:
-                curr_joints_deg = list(curr_joints)
-                for i in range(7):  # 弧度转换为度
-                    curr_joints_deg[i] = round(float(curr_joints_deg[i] / pi * 180.0), 2)
-
-                if curr_joints_deg[0] < 0:
-                    if curr_joints_deg[0] <= -100:
-                        self.window.label_1.setText("Joint1 ({:.2f} deg )".format(curr_joints_deg[0]))
-                    else:
-                        self.window.label_1.setText("Joint1 ({:.3f} deg )".format(curr_joints_deg[0]))
-                else:
-                    if curr_joints_deg[0] >= 100:
-                        self.window.label_1.setText("Joint1 ( {:.2f} deg )".format(curr_joints_deg[0]))
-                    else:
-                        self.window.label_1.setText("Joint1 ( {:.3f} deg )".format(curr_joints_deg[0]))
-                if curr_joints_deg[1] < 0:
-                    if curr_joints_deg[1] <= -100:
-                        self.window.label_2.setText("Joint2 ({:.2f} deg )".format(curr_joints_deg[1]))
-                    else:
-                        self.window.label_2.setText("Joint2 ({:.3f} deg )".format(curr_joints_deg[1]))
-                else:
-                    if curr_joints_deg[1] >= 100:
-                        self.window.label_2.setText("Joint2 ( {:.2f} deg )".format(curr_joints_deg[1]))
-                    else:
-                        self.window.label_2.setText("Joint2 ( {:.3f} deg )".format(curr_joints_deg[1]))
-                if curr_joints_deg[2] < 0:
-                    if curr_joints_deg[2] <= -100:
-                        self.window.label_3.setText("Joint3 ({:.2f} deg )".format(curr_joints_deg[2]))
-                    else:
-                        self.window.label_3.setText("Joint3 ({:.3f} deg )".format(curr_joints_deg[2]))
-                else:
-                    if curr_joints_deg[2] >= 100:
-                        self.window.label_3.setText("Joint3 ( {:.2f} deg )".format(curr_joints_deg[2]))
-                    else:
-                        self.window.label_3.setText("Joint3 ( {:.3f} deg )".format(curr_joints_deg[2]))
-                if curr_joints_deg[3] < 0:
-                    if curr_joints_deg[3] <= -100:
-                        self.window.label_4.setText("Joint4 ({:.2f} deg )".format(curr_joints_deg[3]))
-                    else:
-                        self.window.label_4.setText("Joint4 ({:.3f} deg )".format(curr_joints_deg[3]))
-                else:
-                    if curr_joints_deg[3] >= 100:
-                        self.window.label_4.setText("Joint4 ( {:.2f} deg )".format(curr_joints_deg[3]))
-                    else:
-                        self.window.label_4.setText("Joint4 ( {:.3f} deg )".format(curr_joints_deg[3]))
-                if curr_joints_deg[4] < 0:
-                    if curr_joints_deg[4] <= -100:
-                        self.window.label_5.setText("Joint5 ({:.2f} deg )".format(curr_joints_deg[4]))
-                    else:
-                        self.window.label_5.setText("Joint5 ({:.3f} deg )".format(curr_joints_deg[4]))
-                else:
-                    if curr_joints_deg[4] >= 100:
-                        self.window.label_5.setText("Joint5 ( {:.2f} deg )".format(curr_joints_deg[4]))
-                    else:
-                        self.window.label_5.setText("Joint5 ( {:.3f} deg )".format(curr_joints_deg[4]))
-                if curr_joints_deg[5] < 0:
-                    if curr_joints_deg[5] <= -100:
-                        self.window.label_6.setText("Joint6 ({:.2f} deg )".format(curr_joints_deg[5]))
-                    else:
-                        self.window.label_6.setText("Joint6 ({:.3f} deg )".format(curr_joints_deg[5]))
-                else:
-                    if curr_joints_deg[5] >= 100:
-                        self.window.label_6.setText("Joint6 ( {:.2f} deg )".format(curr_joints_deg[5]))
-                    else:
-                        self.window.label_6.setText("Joint6 ( {:.3f} deg )".format(curr_joints_deg[5]))
-                if curr_joints_deg[6] < 0:
-                    if curr_joints_deg[6] <= -100:
-                        self.window.label_7.setText("Joint7 ({:.2f} deg )".format(curr_joints_deg[6]))
-                    else:
-                        self.window.label_7.setText("Joint7 ({:.3f} deg )".format(curr_joints_deg[6]))
-                else:
-                    if curr_joints_deg[6] >= 100:
-                        self.window.label_7.setText("Joint7 ( {:.2f} deg )".format(curr_joints_deg[6]))
-                    else:
-                        self.window.label_7.setText("Joint7 ( {:.3f} deg )".format(curr_joints_deg[6]))
-
-                # if curr_joints[0] < 0:
-                #     if float(curr_joints[0] / pi * 180.0) <= -100:
-                #         self.window.label_1.setText("Joint1 (deg )")
-                #     else:
-                #         self.window.label_1.setText("Joint1 (deg )")
-                # else:
-                #     if float(curr_joints[0] / pi * 180.0) >= 100:
-                #         self.window.label_1.setText("Joint1 ( deg )")
-                #     else:
-                #         self.window.label_1.setText("Joint1 (deg )")
-                # if curr_joints[1] < 0:
-                #     if float(curr_joints[1] / pi * 180.0) <= -100:
-                #         self.window.label_2.setText("Joint2 (deg )")
-                #     else:
-                #         self.window.label_2.setText("Joint2 (deg )")
-                # else:
-                #     if float(curr_joints[1] / pi * 180.0) >= 100:
-                #         self.window.label_2.setText("Joint2 (deg )")
-                #     else:
-                #         self.window.label_2.setText("Joint2 (deg )")
-                # if curr_joints[2] < 0:
-                #     if float(curr_joints[2] / pi * 180.0) <= -100:
-                #         self.window.label_3.setText("Joint3 ( deg )")
-                #     else:
-                #         self.window.label_3.setText("Joint3 (deg )")
-                # else:
-                #     if float(curr_joints[2] / pi * 180.0) >= 100:
-                #         self.window.label_3.setText("Joint3 (deg )")
-                #     else:
-                #         self.window.label_3.setText("Joint3 (deg )")
-                # if curr_joints[3] < 0:
-                #     if float(curr_joints[3] / pi * 180.0) <= -100:
-                #         self.window.label_4.setText("Joint4 (deg )")
-                #     else:
-                #         self.window.label_4.setText("Joint4 (deg )")
-                # else:
-                #     if float(curr_joints[3] / pi * 180.0) >= 100:
-                #         self.window.label_4.setText("Joint4 ( deg )")
-                #     else:
-                #         self.window.label_4.setText("Joint4 ( deg )")
-                # if curr_joints[4] < 0:
-                #     if float(curr_joints[4] / pi * 180.0) <= -100:
-                #         self.window.label_5.setText("Joint5 (deg )")
-                #     else:
-                #         self.window.label_5.setText("Joint5 (deg )")
-                # else:
-                #     if float(curr_joints[3] / pi * 180.0) >= 100:
-                #         self.window.label_5.setText("Joint5 (deg )")
-                #     else:
-                #         self.window.label_5.setText("Joint5 (deg )")
-                # if curr_joints[5] < 0:
-                #     if float(curr_joints[5] / pi * 180.0) <= -100:
-                #         self.window.label_6.setText("Joint6 (deg )")
-                #     else:
-                #         self.window.label_6.setText("Joint6 ( deg )")
-                # else:
-                #     if float(curr_joints[5] / pi * 180.0) >= 100:
-                #         self.window.label_6.setText("Joint6 ( deg )")
-                #     else:
-                #         self.window.label_6.setText("Joint6 (deg )")
-                # if curr_joints[6] < 0:
-                #     if float(curr_joints[6] / pi * 180.0) <= -100:
-                #         self.window.label_7.setText("Joint7 (deg )")
-                #     else:
-                #         self.window.label_7.setText("Joint7 ( deg )")
-                # else:
-                #     if float(curr_joints[6] / pi * 180.0) >= 100:
-                #         self.window.label_7.setText("Joint7 (  deg )")
-                #     else:
-                #         self.window.label_7.setText("Joint7 (  deg )")
-
-            # 位置刷新显示
-            if movel_m_cm_flag is 0:
-                if curr_pose[0] < 0:
-                    self.window.label_9.setText("Pose X (%.1f cm )" % float(curr_pose[0] * 100))
-                else:
-                    self.window.label_9.setText("Pose X ( %.1f cm )" % float(curr_pose[0] * 100))
-                if curr_pose[1] < 0:
-                    self.window.label_10.setText("Pose Y (%.1f cm )" % float(curr_pose[1] * 100))
-                else:
-                    self.window.label_10.setText("Pose Y ( %.1f cm )" % float(curr_pose[1] * 100))
-                if curr_pose[2] < 0:
-                    self.window.label_11.setText("Pose Z (%.1f cm )" % float(curr_pose[2] * 100))
-                else:
-                    self.window.label_11.setText("Pose Z ( %.1f cm )" % float(curr_pose[2] * 100))
-            else:
-                if curr_pose[0] < 0:
-                    self.window.label_9.setText("Pose X (%.3f m )" % float(curr_pose[0]))
-                else:
-                    self.window.label_9.setText("Pose X ( %.3f m )" % float(curr_pose[0]))
-                if curr_pose[1] < 0:
-                    self.window.label_10.setText("Pose Y (%.3f m )" % float(curr_pose[1]))
-                else:
-                    self.window.label_10.setText("Pose Y ( %.3f m )" % float(curr_pose[1]))
-                if curr_pose[2] < 0:
-                    self.window.label_11.setText("Pose Z (%.3f m )" % float(curr_pose[2]))
-                else:
-                    self.window.label_11.setText("Pose Z ( %.3f m )" % float(curr_pose[2]))
-
-            if movel_rad_deg_flag is 0:
-                if curr_pose[3] < 0:
-                    self.window.label_12.setText("Pose R (%.3f rad )" % float(curr_pose[3]))
-                else:
-                    self.window.label_12.setText("Pose R ( %.3f rad )" % float(curr_pose[3]))
-                if curr_pose[4] < 0:
-                    self.window.label_13.setText("Pose P (%.3f rad )" % float(curr_pose[4]))
-                else:
-                    self.window.label_13.setText("Pose P ( %.3f rad )" % float(curr_pose[4]))
-                if curr_pose[5] < 0:
-                    self.window.label_14.setText("Pose Y (%.3f rad )" % float(curr_pose[5]))
-                else:
-                    self.window.label_14.setText("Pose Y ( %.3f rad )" % float(curr_pose[5]))
-            else:
-                if curr_pose[3] < 0:
-                    if float(curr_pose[3] / pi * 180.0) <= -100:
-                        self.window.label_12.setText("Pose R (%.2f deg )" % float(curr_pose[3] / pi * 180.0))
-                    else:
-                        self.window.label_12.setText("Pose R (%.3f deg )" % float(curr_pose[3] / pi * 180.0))
-                else:
-                    if float(curr_pose[3] / pi * 180.0) >= 100:
-                        self.window.label_12.setText("Pose R ( %.2f deg )" % float(curr_pose[3] / pi * 180.0))
-                    else:
-                        self.window.label_12.setText("Pose R ( %.3f deg )" % float(curr_pose[3] / pi * 180.0))
-                if curr_pose[4] < 0:
-                    if float(curr_pose[4] / pi * 180.0) <= -100:
-                        self.window.label_13.setText("Pose P (%.2f deg )" % float(curr_pose[4] / pi * 180.0))
-                    else:
-                        self.window.label_13.setText("Pose P (%.3f deg )" % float(curr_pose[4] / pi * 180.0))
-                else:
-                    if float(curr_pose[4] / pi * 180.0) >= 100:
-                        self.window.label_13.setText("Pose P ( %.2f deg )" % float(curr_pose[4] / pi * 180.0))
-                    else:
-                        self.window.label_13.setText("Pose P ( %.3f deg )" % float(curr_pose[4] / pi * 180.0))
-                if curr_pose[5] < 0:
-                    if float(curr_pose[5] / pi * 180.0) <= -100:
-                        self.window.label_14.setText("Pose Y (%.2f deg )" % float(curr_pose[5] / pi * 180.0))
-                    else:
-                        self.window.label_14.setText("Pose Y (%.3f deg )" % float(curr_pose[5] / pi * 180.0))
-                else:
-                    if float(curr_pose[5] / pi * 180.0) >= 100:
-                        self.window.label_14.setText("Pose Y ( %.2f deg )" % float(curr_pose[5] / pi * 180.0))
-                    else:
-                        self.window.label_14.setText("Pose Y ( %.3f deg )" % float(curr_pose[5] / pi * 180.0))
 
             r.sleep()
 
@@ -1096,10 +808,11 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
             lift_speed_modify_flag = True
 
     def lift_up(self):
+        print("lift up button")
         global lift_up_flag, lift_step
         lift_up_flag = True
         lift_step = self.comboBox_lift_step.currentText()[0:2]
-        print("lift_step:", lift_step)
+        # print("lift_step:", lift_step)
 
     def lift_down(self):
         global lift_down_flag, lift_step

@@ -21,16 +21,18 @@ class LiftDriver{
 public:
     LiftDriver();
     LiftDriver(ros::NodeHandle* nh);
+    LiftDriver(ros::NodeHandle* nh, std::string serialDeviceName);
     ~LiftDriver();
 
-    void Init(); // 串口初始化
+    void Init(std::string serialDeviceName); // 串口初始化
     void MoveUp(int32_t round); // 向上相对运动
     void MoveDown(int32_t round); // 向下相对运动
     void MoveUpABS(int32_t round); // 向上绝对运动
     void MoveDownABS(int32_t round); // 向下绝对运动
 
     void MoveABS(float pose); // 绝对位置运动
-    bool MoveDone(); // 阻塞到移动完成
+    bool MoveDone(); // 检查是否移动完成
+    void MoveDoneBlocking(); // 阻塞到移动完成
     void BackHome(); // 回原点
     void Stop(); // 急停
     int32_t GetPose(); // 获取当前位置
@@ -41,7 +43,19 @@ public:
     bool running = false; // 电机工作标志
     bool stop_flag = false; // 急停标志
     int16_t aim_speed = 200; // 电机转速，单位：转/分钟
+//    bool srv_running = false; // ros服务运行标志
+
+    // 运动控制标志位，目的在于将发送指令的过程放到主循环中
+    bool move_up_flag = false; // 向上相对运动标志
+    float move_up_round = 0; // 相对运动的脉冲数
+    bool move_down_flag = false; // 向下相对运动标志
+    float move_down_round = 0; // 相对运动的脉冲数
+    bool move_abs_flag = false; // 绝对运动标志
+    float move_abs_round = 0; // 绝对运动的脉冲数
+    bool back_home_flag = false; // 回零标志位
+
     int32_t cur_pose = 0; // 当前位置，单位：脉冲
+    int16_t cur_speed = 0; // 当前速度，单位：转/分钟
 
 private:
     unsigned short ModbusCRC16(std::vector<unsigned char> &buff, uint16_t len); // ModbusCRC16校验

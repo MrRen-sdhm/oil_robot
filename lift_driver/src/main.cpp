@@ -35,16 +35,49 @@ int main(int argc, char** argv)
 //    lift_driver.GetSpeed();
 //    lift_driver.GetState();
 
+    ros::AsyncSpinner spinner(2); // 使用异步spinner，服务函数将在单独的线程中运行，不会阻塞主线程
+    spinner.start();
 
+    /** 主循环负责与电机通信，所有收发数据均要在主循环中完成，不可在ROS服务回调函数中发送命令，否则指令可能发送失败 **/
     while(ros::ok()) {
-        lift_driver.MoveDone(); // 检查是否运动完成
+        /** 读取数据 **/
         lift_driver.GetPose(); // 获取当前位置
+        lift_driver.GetSpeed(); // 获取当前速度
 
-        usleep(1000 * 20);
-        ros::spinOnce();
+        /** 写入数据 **/
+        if(lift_driver.stop_flag) {
+            lift_driver.Stop();
+            lift_driver.stop_flag = false;
+        }
+
+        if(lift_driver.move_up_flag) {
+            lift_driver.MoveUp(lift_driver.move_up_round);
+            lift_driver.move_up_flag = false;
+        }
+
+        if(lift_driver.move_down_flag) {
+            lift_driver.MoveDown(lift_driver.move_down_round);
+            lift_driver.move_down_flag = false;
+        }
+
+        if(lift_driver.move_abs_flag) {
+            lift_driver.MoveUpABS(lift_driver.move_abs_round);
+            lift_driver.move_abs_flag = false;
+        }
+
+        if(lift_driver.back_home_flag) {
+            lift_driver.BackHome();
+            lift_driver.back_home_flag = false;
+        }
+
+//        usleep(1000 * 20);
+//        ros::spinOnce();
     }
 
-//    ros::spin(); // FIXME
+//    ros::spin();
+
+    spinner.stop();
+    ROS_INFO("Exiting lift_driver...");
 
     return 0;
 }
