@@ -7,26 +7,24 @@
 #include <cstdlib>
 #include <iostream>
 
-QRDriver::QRDriver() {
-    Init();
-}
-
-QRDriver::QRDriver(ros::NodeHandle* nh) : nh_(*nh) {
-    Init();
+QRDriver::QRDriver(ros::NodeHandle* nh, string serial_Name) : nh_(*nh) {
+    Init(serial_Name);
 }
 
 QRDriver::~QRDriver() {
-    serialdriver_->ClosePort();
-    delete serialdriver_;
+    serial_port->Close();
+    delete serial_port;
 }
 
-void QRDriver::Init() {
-    std::string serialDeviceName_ = "/dev/ttyUSB0";
-
+void QRDriver::Init(string serialDeviceName) {
     // 波特率115200, 数据位8位, 偶校验
-    serialdriver_ = new SerialDriver();
-    bool ret = serialdriver_->OpenPort(serialDeviceName_, 115200, SerialDriver::DataBits::Data8, SerialDriver::Parity::Even);
-    if(!ret) throw std::runtime_error("Open serial of qr failed!\n"); // FIXME
+    try {
+        serial_port = new SerialPort(serialDeviceName, BaudRate::BAUD_115200, CharacterSize::CHAR_SIZE_8,
+                                     FlowControl::FLOW_CONTROL_NONE, Parity::PARITY_EVEN);
+    }
+    catch  (const OpenFailed&) {
+        throw std::runtime_error("Open serial of lift failed!\n");
+    }
 
 //    hand_ctl_service = nh_.advertiseService("hand_control", &QRDriver::HandControl, this);
 //    ROS_INFO("Yinshi hand control service started!");
@@ -38,7 +36,7 @@ void QRDriver::Init() {
  */
 void QRDriver::SelectDir() {
     std::vector<unsigned char> _Data = {0xE4, 0x1B};
-    serialdriver_->Write(_Data.data(), _Data.size());
+    serial_port->Write(_Data);
 }
 
 /**
@@ -47,41 +45,50 @@ void QRDriver::SelectDir() {
  * 响应数据长度为21
  */
 void QRDriver::GetPose() {
-//    // 发送指令
-//    std::vector<unsigned char> _Data = {0xC8, 0x37};
-//    serialdriver_->Write(_Data.data(), _Data.size());
-
-    while(true) {
+    while(ros::ok()) {
         // 发送指令
         std::vector<unsigned char> _Data = {0xC8, 0x37};
-        serialdriver_->Write(_Data.data(), _Data.size());
+        serial_port->Write(_Data);
 
-        usleep(50000 * 10); // 等待50ms
+        usleep(1000 * 50); // 等待50ms
 
-        // 读取数据
-        int len = serialdriver_->Read(&rx_buf_, 22); // 这里务必读取>21字节
-        // printf("len: %d\n", len);
-        if(len == 21) { // 正确接收到21个响应字节
-            for (int i = 0; i < 21; i++)
-                printf("%2X ", rx_buf_[i]);
-            puts("");
+        try {
+            serial_port->Read(read_buffer, 0, ms_timeout) ; // 0表示在超时时间内尽可能多的读取数据
+        }
+        catch (const ReadTimeout&) { // 超时即触发异常，注意此处的超时并不是错误
+            int len = read_buffer.size();
+            // printf("len: %d\n", len);
 
-            Parase(); // 解析位置
+            if(len == 21) { // 正确接收到21个响应字节
+//                for (int i = 0; i < 21; i++)
+//                    printf("%2X ", read_buffer[i]);
+//                puts("");
+
+                Parsing(); // 解析位置
+            }
         }
     }
 }
 
-void QRDriver::Parase() {
-    if((rx_buf_[0]==0)&&(rx_buf_[1]==69))//识别到二维码，只计算识别到二维码时的参数，69=0x45
+void QRDriver::Parsing() {
+    if((read_buffer[0]==0)&&(read_buffer[1]==69))//识别到二维码，只计算识别到二维码时的参数，69=0x45
     {
         //二维码参数解析
-        int8_t Byte3_1 = rx_buf_[2] & 7;
-        int8_t X_position = Byte3_1 * 16384 * 128 + rx_buf_[3] * 16384 + rx_buf_[4] * 128 + rx_buf_[5]; // X轴偏差
-        int8_t Y_position = rx_buf_[6] * 128 + rx_buf_[7]; // Y轴偏差
-        uint16_t Angle_value = rx_buf_[10] * 128 + rx_buf_[11]; // 旋转角度,无符号16位数
-        uint8_t Tag_number = rx_buf_[17]; //标签号，无符号8位数
+        int8_t Byte3_1 = read_buffer[2] & 7;
+        int8_t X_position = Byte3_1 * 16384 * 128 + read_buffer[3] * 16384 + read_buffer[4] * 128 + read_buffer[5]; // X轴偏差
+        int8_t Y_position = read_buffer[6] * 128 + read_buffer[7]; // Y轴偏差
+        uint16_t Angle_value = read_buffer[10] * 128 + read_buffer[11]; // 旋转角度,无符号16位数
+        uint8_t Tag_number = read_buffer[17]; //标签号，无符号8位数
 
         printf("X:%d Y:%d Angle:%d Tag:%d\n", X_position, Y_position, Angle_value, Tag_number);
+
+        /** 发布消息 **/
+        std_msgs::Int16MultiArray msg;
+        msg.data.push_back(X_position);
+        msg.data.push_back(Y_position);
+        msg.data.push_back(Angle_value);
+        msg.data.push_back(Tag_number);
+        pub.publish(msg);
     }
 }
 

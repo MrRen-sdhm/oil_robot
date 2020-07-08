@@ -10,7 +10,6 @@
 #include "lift_driver/LiftStat.h"
 #include "lift_driver/LiftPose.h"
 
-#include "serial_driver.h"
 #include "SerialPort.h"
 
 #include <vector>
@@ -67,9 +66,6 @@ private:
     ros::ServiceServer lift_ctl_service;
     ros::ServiceServer lift_stat_service;
     ros::ServiceServer lift_pose_service;
-
-    SerialDriver* serialdriver_;
-    unsigned char rx_buf_[20]; // 接收缓冲
 
     SerialPort* serial_port;
     DataBuffer read_buffer ; // 接收缓冲区

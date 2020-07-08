@@ -136,7 +136,6 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(lift_driver src/main.cpp
-        src/serial_driver.cpp
         src/lift_driver.cpp
         src/SerialPort.cpp
         )

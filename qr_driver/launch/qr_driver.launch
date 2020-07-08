@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node name="qr_driver" pkg="qr_driver" type="qr_driver" respawn="false" output="screen" >
+        <param name="serial_name" type="string" value="/dev/ttyUSB0" />
+    </node>
+</launch>

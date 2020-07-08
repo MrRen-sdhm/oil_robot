@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(qr_driver)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
- add_compile_options(-std=c++11)
+ add_compile_options(-std=c++14)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -134,7 +134,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(qr_driver src/main.cpp
-        src/serial_driver.cpp
+        src/SerialPort.cpp
         src/qr_driver.cpp
         )
 

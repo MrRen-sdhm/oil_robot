@@ -1,4 +1,8 @@
 string command
-int16 pose
+int16 value
 ---
+int16 x
+int16 y
+int16 angle
+int16 tag
 bool success
