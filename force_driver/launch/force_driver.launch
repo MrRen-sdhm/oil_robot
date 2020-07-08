@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- start force driver -->
+    <node name="force_driver" pkg="force_driver" type="force_driver.py" respawn="true" output="screen" />
+    
+</launch>
