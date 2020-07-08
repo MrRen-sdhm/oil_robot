@@ -12,10 +12,13 @@ using namespace std;
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "lift_driver");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh("~");
 
-    LiftDriver lift_driver(&nh);
+    string serial_name;
+    nh.param<string>("serial_name", serial_name, "/dev/ttyUSB0");
+    printf("[INFO] serial_name:%s\n", serial_name.c_str());
 
+    LiftDriver lift_driver(&nh, serial_name);
     lift_driver.SetSpeed(10); // 10mm/s
 
 /// 绝对/相对运动
@@ -69,12 +72,7 @@ int main(int argc, char** argv)
             lift_driver.BackHome();
             lift_driver.back_home_flag = false;
         }
-
-//        usleep(1000 * 20);
-//        ros::spinOnce();
     }
-
-//    ros::spin();
 
     spinner.stop();
     ROS_INFO("Exiting lift_driver...");

@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-    <arg name="fake" default="false" />
-
-    <!-- start gripper driver -->
-    <node name="yinshi_driver" pkg="yinshi_driver" type="yinshi_driver" respawn="true" output="screen" />
-    
+    <node name="lift_driver" pkg="lift_driver" type="lift_driver" respawn="false" output="screen" >
+        <param name="serial_name" type="string" value="/dev/ttyUSB0" />
+    </node>
 </launch>

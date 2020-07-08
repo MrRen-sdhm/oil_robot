@@ -2,20 +2,12 @@
 // Created by MrRen-sdhm on 20-06-29.
 //
 
-// TODO: 1-launch文件中设置串口名 2-单独线程中发布位置及速度
+// TODO: 单独线程中发布位置及速度
 
 #include "lift_driver.h"
 
 #include <cstdlib>
 #include <iostream>
-
-LiftDriver::LiftDriver() {
-    Init("/dev/ttyUSB0");
-}
-
-LiftDriver::LiftDriver(ros::NodeHandle* nh) : nh_(*nh) {
-    Init("/dev/ttyUSB0");
-}
 
 LiftDriver::LiftDriver(ros::NodeHandle* nh, std::string serialDeviceName) : nh_(*nh) {
     Init(serialDeviceName);
@@ -26,9 +18,9 @@ LiftDriver::~LiftDriver() {
     delete serial_port;
 }
 
-void LiftDriver::Init(std::string serialDeviceName) {
+void LiftDriver::Init(std::string serial_name) {
     try {
-        serial_port = new SerialPort(serialDeviceName, BaudRate::BAUD_9600, CharacterSize::CHAR_SIZE_8,
+        serial_port = new SerialPort(serial_name, BaudRate::BAUD_9600, CharacterSize::CHAR_SIZE_8,
                                       FlowControl::FLOW_CONTROL_NONE, Parity::PARITY_EVEN, StopBits::STOP_BITS_1);
     }
     catch  (const OpenFailed&) {
@@ -446,23 +438,28 @@ void LiftDriver::GetState() {
 
     serial_port->Write(_Data);
 
-    printf("\n");
-    for(auto i : _Data) {
-        printf("%.2X ", i);
+//    printf("\nTx:");
+//    for(auto i : _Data) {
+//        printf("%.2X ", i);
+//    }
+//    printf("\n");
+
+    usleep(1000 * 50); // 延时50ms再读取数据
+
+    int32_t round = 0; // 电机当前位置（脉冲数）
+
+    try {
+        serial_port->Read(read_buffer, 0, ms_timeout) ; // 0表示在超时时间内尽可能多的读取数据
     }
-    printf("\n");
-
-    // 延时读取数据
-    usleep(50000 * 10); // 等待50ms
-
-    // 读取数据
-    int len = serialdriver_->Read(&rx_buf_, 21); // 这里务必读取>9字节
-    printf("len: %d\n", len);
-    if (len == 9) { // 正确接收到9个响应字节
-//    if(1) {
-        for (int i = 0; i < len; i++)
-            printf("%.2X ", rx_buf_[i]);
-        puts("");
+    catch (const ReadTimeout&) { // 超时即触发异常，注意此处的超时并不是错误
+        int len = read_buffer.size();
+//        printf("len: %d\n", len);
+        if (len == 9) { // 正确接收到9个响应字节
+//            printf("Rx:");
+//            for (int i = 0; i < len; i++)
+//                printf("%.2X ", read_buffer[i]);
+//            puts("");
+        }
     }
 }
 

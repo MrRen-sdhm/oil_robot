@@ -15,15 +15,14 @@
 #include <vector>
 
 using namespace LibSerial;
+using namespace std;
 
 class LiftDriver{
 public:
-    LiftDriver();
-    LiftDriver(ros::NodeHandle* nh);
     LiftDriver(ros::NodeHandle* nh, std::string serialDeviceName);
     ~LiftDriver();
 
-    void Init(std::string serialDeviceName); // 串口初始化
+    void Init(string serial_name); // 串口初始化
     void MoveUp(int32_t round); // 向上相对运动
     void MoveDown(int32_t round); // 向下相对运动
     void MoveUpABS(int32_t round); // 向上绝对运动
