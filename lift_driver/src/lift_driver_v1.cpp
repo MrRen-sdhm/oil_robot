@@ -9,8 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 
-LiftDriver::LiftDriver(ros::NodeHandle* nh, std::string ip, int port) : nh_(*nh) {
-    Init(ip, port);
+LiftDriver::LiftDriver(ros::NodeHandle* nh, std::string serialDeviceName) : nh_(*nh) {
+    Init(serialDeviceName);
 }
 
 LiftDriver::~LiftDriver() {
@@ -18,18 +18,14 @@ LiftDriver::~LiftDriver() {
     delete serial_port;
 }
 
-void LiftDriver::Init(std::string ip, int port) {
-//    try {
-//        serial_port = new SerialPort(serial_name, BaudRate::BAUD_9600, CharacterSize::CHAR_SIZE_8,
-//                                      FlowControl::FLOW_CONTROL_NONE, Parity::PARITY_EVEN, StopBits::STOP_BITS_1);
-//    }
-//    catch  (const OpenFailed&) {
-//        throw std::runtime_error("Open serial of lift failed!\n");
-//    }
-
-    // modbus tcp 初始化
-    m_master_ = new ModbusAdapter();
-    m_master_->modbusConnectTCP(ip, port);
+void LiftDriver::Init(std::string serial_name) {
+    try {
+        serial_port = new SerialPort(serial_name, BaudRate::BAUD_9600, CharacterSize::CHAR_SIZE_8,
+                                      FlowControl::FLOW_CONTROL_NONE, Parity::PARITY_EVEN, StopBits::STOP_BITS_1);
+    }
+    catch  (const OpenFailed&) {
+        throw std::runtime_error("Open serial of lift failed!\n");
+    }
 
     lift_ctl_service = nh_.advertiseService("lift_control", &LiftDriver::LiftControl, this);
     ROS_INFO("Lift control service started!");
@@ -172,43 +168,51 @@ void LiftDriver::MoveDown(int32_t round) {
 void LiftDriver::MoveUpABS(int32_t round) {
     usleep(1000 * 10); // 延时
     round = -round; // 向上时脉冲数为负
-    std::vector<unsigned char> _Data = {0x0A, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0xF4, 0x01, 0xF4, 0x01, 0x05, 0x00, 0x00, 0x00};
-//    std::vector<unsigned char> _Data = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    std::vector<unsigned char> _Data = {0x01, 0x10, 0x62, 0x18, 0x00, 0x06, 0x0C, 0x00, 0x01}; // 第四个字节为0x18 最后一个字节为0x01
     // 脉冲数
-//    _Data.push_back(round >> 24);
-//    _Data.push_back(round >> 16);
-//    _Data.push_back(round >> 8 );
-//    _Data.push_back(round >> 0 );
+    _Data.push_back(round >> 24);
+    _Data.push_back(round >> 16);
+    _Data.push_back(round >> 8 );
+    _Data.push_back(round >> 0 );
 
     // 速度/加速度/减速度
-//    _Data.push_back(aim_speed >> 8);
-//    _Data.push_back(aim_speed >> 0);
-//    _Data.push_back(0x00);
-//    _Data.push_back(0x32);
-//    _Data.push_back(0x00);
-//    _Data.push_back(0x32);
+    _Data.push_back(aim_speed >> 8);
+    _Data.push_back(aim_speed >> 0);
+    _Data.push_back(0x00);
+    _Data.push_back(0x32);
+    _Data.push_back(0x00);
+    _Data.push_back(0x32);
+
+    // CRC校验
+    unsigned short ret = ModbusCRC16(_Data, _Data.size());
+    _Data.push_back(ret >> 8);
+    _Data.push_back(ret >> 0);
 
 //    for(auto i : _Data) {
 //        printf("%.2X ", i);
 //    }
 //    printf("\n");
 
-    int ret = _write_data(0, _Data.size() / 2, (uint16_t *) _Data.data());
-    printf("%zu\n", _Data.size());
-//    if (!ret) return false;
+    serial_port->Write(_Data);
 
+    usleep(50000 * 10); // 等待50ms
+
+    // PR1运行
+    std::vector<unsigned char> _Data1 = {0x01, 0x06, 0x60, 0x02, 0x00, 0x13};
+    ret = ModbusCRC16(_Data1, _Data1.size());
+    _Data1.push_back(ret >> 8);
+    _Data1.push_back(ret >> 0);
+
+//    printf("\n");
+//    for(auto i : _Data1) {
+//        printf("%.2X ", i);
+//    }
+//    printf("\n");
+
+    serial_port->Write(_Data1);
+
+//    MoveDone(); // 阻塞到移动完成
     running = true;
-    usleep(1000 * 100); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
-}
-
-void LiftDriver::Test() {
-
-    std::vector<unsigned char> _Data = {0x01 << 3, 0x00};//4:stop 5:up 6:down   D0:指定距离，unit:mm（先发启动指令）
-
-    int ret = _write_data(8, _Data.size() / 2, (uint16_t *) _Data.data());
-    printf("%d\n", ret);
-//    printf("%zu\n", _Data.size());
-
     usleep(1000 * 100); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
 }
 
@@ -321,25 +325,51 @@ void LiftDriver::Stop() {
 
 int32_t LiftDriver::GetPose() {
     usleep(1000 * 50); // 延时50ms再发送数据
+    std::vector<unsigned char> _Data = {0x01, 0x03, 0x60, 0x2C, 0x00, 0x02};
 
-    uint8_t buff[20];
-    // 读取所有控制器寄存器, 并存入MantraDevice Register
-    if (!m_master_->modbusReadHoldReg(1, 0, 1, (uint16_t *)buff)) {
-        throw runtime_error("\033[1;31mFail to read all register from controller!\033[0m\n");
+    unsigned short ret = ModbusCRC16(_Data, _Data.size());
+    _Data.push_back(ret >> 8);
+    _Data.push_back(ret >> 0);
+
+    serial_port->Write(_Data);
+
+//    printf("\nTx:");
+//    for(auto i : _Data) {
+//        printf("%.2X ", i);
+//    }
+//    printf("\n");
+
+    usleep(1000 * 50); // 延时50ms再读取数据
+
+    int32_t round = 0; // 电机当前位置（脉冲数）
+
+    try {
+        serial_port->Read(read_buffer, 0, ms_timeout) ; // 0表示在超时时间内尽可能多的读取数据
     }
+    catch (const ReadTimeout&) { // 超时即触发异常，注意此处的超时并不是错误
+        int len = read_buffer.size();
+//        printf("len: %d\n", len);
+        if (len == 9) { // 正确接收到9个响应字节
+//            printf("Rx:");
+//            for (int i = 0; i < len; i++)
+//                printf("%.2X ", read_buffer[i]);
+//            puts("");
 
-    for(auto i : buff) {
-        printf("%.2X ", i);
+            round |= (int32_t) read_buffer[3] << 24;
+            round |= (int32_t) read_buffer[4] << 16;
+            round |= (int32_t) read_buffer[5] << 8;
+            round |= (int32_t) read_buffer[6] << 0;
+//            int32_t round = ((int32_t)rx_buf_[3] << 24) | ((int32_t)rx_buf_[4] << 16) | ((int32_t)rx_buf_[5] << 8) | (int32_t)rx_buf_[6];
+        }
     }
-    printf("\n");
+//    printf("round: %d\n", round);
 
-//    cur_pose = round; // 保存当前位置
+    cur_pose = round; // 保存当前位置
 
 //    unsigned short ret1 = ModbusCRC16(read_buffer, 7);
 //    printf("crc: %.2X\n", ret1);
 
-    return 0;
-//    return round;
+    return round;
 }
 
 /**

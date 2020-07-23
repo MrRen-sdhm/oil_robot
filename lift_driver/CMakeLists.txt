@@ -117,10 +117,12 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
+include_directories(3rdparty/libmodbus include)
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
+aux_source_directory(3rdparty/libmodbus LIBMODBUSSRCS)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -138,6 +140,8 @@ include_directories(
 add_executable(lift_driver src/main.cpp
         src/lift_driver.cpp
         src/SerialPort.cpp
+        src/modbusadapter.cpp
+        ${LIBMODBUSSRCS}
         )
 
 # Most behind add_executable!!!!!!!!!!!

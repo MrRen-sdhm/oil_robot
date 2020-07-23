@@ -30,7 +30,7 @@
     </include>
 
     <!-- robot hmi -->
-    <!-- <include if="$(arg hmi)" file="$(find oil_hmi)/launch/oil_hmi.launch" /> -->
+    <include if="$(arg hmi)" file="$(find oil_hmi)/launch/oil_hmi.launch" />
 
     <!-- move server -->
     <node name="oil_move_server" pkg="oil_application" type="oil_move_server.py" respawn="true" output="screen" />

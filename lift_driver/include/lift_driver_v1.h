@@ -11,7 +11,6 @@
 #include "lift_driver/LiftPose.h"
 
 #include "SerialPort.h"
-#include "modbusadapter.h"
 
 #include <vector>
 
@@ -20,10 +19,10 @@ using namespace std;
 
 class LiftDriver{
 public:
-    LiftDriver(ros::NodeHandle* nh, std::string ip, int port);
+    LiftDriver(ros::NodeHandle* nh, std::string serialDeviceName);
     ~LiftDriver();
 
-    void Init(string ip, int port); // 串口初始化
+    void Init(string serial_name); // 串口初始化
     void MoveUp(int32_t round); // 向上相对运动
     void MoveDown(int32_t round); // 向下相对运动
     void MoveUpABS(int32_t round); // 向上绝对运动
@@ -38,8 +37,6 @@ public:
     int16_t GetSpeed(); // 获取当前速度
     void SetSpeed(uint32_t speed_); // 设置目标速度
     void GetState(); // 获取当前报警状态
-
-    void Test();
 
     bool running = false; // 电机工作标志
     bool stop_flag = false; // 急停标志
@@ -72,19 +69,6 @@ private:
     SerialPort* serial_port;
     DataBuffer read_buffer ; // 接收缓冲区
     size_t ms_timeout = 250 ; // 接收超时，即获取超时时间内的数据
-
-    /// modbus相关参数
-    ModbusAdapter *m_master_;        // modbus服务器
-    // modbus读保持寄存器数据, 使用uint16_t类型写入虚拟寄存器, 使用数据时将虚拟寄存器数据转换为int16或int32类型即可
-    int _read_data(int addr, int len, uint16_t* data) {
-        int rect = m_master_->modbusReadHoldReg(1, addr, len, data);
-        return rect;
-    }
-
-    // modbus写保持寄存器数据, 使用uint16_t类型写入, int16或int32类型数据需转换为uint16类型
-    int _write_data(int addr, int len, const uint16_t* data) {
-        return m_master_->modbusWriteData(1, MODBUS_FC_WRITE_MULTIPLE_REGISTERS, addr, len, data);
-    }
 };
 
 
