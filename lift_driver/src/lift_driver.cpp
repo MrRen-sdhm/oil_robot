@@ -14,22 +14,14 @@ LiftDriver::LiftDriver(ros::NodeHandle* nh, std::string ip, int port) : nh_(*nh)
 }
 
 LiftDriver::~LiftDriver() {
-    serial_port->Close();
-    delete serial_port;
+    m_master_->modbusDisConnect();
+    delete m_master_;
 }
 
 void LiftDriver::Init(std::string ip, int port) {
-//    try {
-//        serial_port = new SerialPort(serial_name, BaudRate::BAUD_9600, CharacterSize::CHAR_SIZE_8,
-//                                      FlowControl::FLOW_CONTROL_NONE, Parity::PARITY_EVEN, StopBits::STOP_BITS_1);
-//    }
-//    catch  (const OpenFailed&) {
-//        throw std::runtime_error("Open serial of lift failed!\n");
-//    }
-
     // modbus tcp 初始化
     m_master_ = new ModbusAdapter();
-    m_master_->modbusConnectTCP(ip, port);
+    m_master_->modbusConnectTCP(ip, port); // FIXME
 
     lift_ctl_service = nh_.advertiseService("lift_control", &LiftDriver::LiftControl, this);
     ROS_INFO("Lift control service started!");
@@ -40,284 +32,118 @@ void LiftDriver::Init(std::string ip, int port) {
     ROS_INFO("Lift pose service started!");
 }
 
-/**
- * 向上运动， 相对运动（PR1），单位：转
- * 设置指令: 01 10 62 08 00 06 0C 00 41 FF FE 79 60 00 C8 00 32 00 32
- * 00 41 表示相对运动 见PR9.00 / FF FE 79 60 代表-100000转  FF FE为高位 79 60为低位 见PR9.01（高位）及PR9.02（低位）
- * 00 C8 代表速度 / 00 32 代表加速度 / 00 32 代表减速度
- */
-void LiftDriver::MoveUp(int32_t round) {
-    if(running) return; // 电机正在运行
-    running = true; // 电机启动
+void LiftDriver::SetBackSpeed(int32_t speed) {
+    std::vector<unsigned char> _Data(4);
 
-    usleep(1000 * 50); // 延时
-    round = -round; // 向上时脉冲数为负
-    std::vector<unsigned char> _Data = {0x01, 0x10, 0x62, 0x08, 0x00, 0x06, 0x0C, 0x00, 0x41};
-    // 脉冲数
-    _Data.push_back(round >> 24);
-    _Data.push_back(round >> 16);
-    _Data.push_back(round >> 8 );
-    _Data.push_back(round >> 0 );
+    // 设置回零速度，先发低位后发高位
+    _Data[0] = speed >> 0;
+    _Data[1] = speed >> 8;
+    _Data[2] = speed >> 16;
+    _Data[3] = speed >> 24;
 
-    // 速度/加速度/减速度
-    _Data.push_back(aim_speed >> 8);
-    _Data.push_back(aim_speed >> 0);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
+    for(auto i : _Data) {
+        printf("%.2X ", i);
+    }
+    printf("\n");
 
-    // CRC校验
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-//    for(auto i : _Data) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data);
-
-    usleep(1000 * 50); // 等待50ms
-
-    // PR1运行
-    std::vector<unsigned char> _Data1 = {0x01, 0x06, 0x60, 0x02, 0x00, 0x11};
-    ret = ModbusCRC16(_Data1, _Data1.size());
-    _Data1.push_back(ret >> 8);
-    _Data1.push_back(ret >> 0);
-
-//    printf("\n");
-//    for(auto i : _Data1) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data1);
-
-//    MoveDone(); // 阻塞到移动完成
-//    running = true;
-    usleep(1000 * 50);
-
-//    sleep(10);
-//    while(cur_speed != 0) {
-//        printf("[INFO] speed:%d\n", cur_speed);
-//    }
+    int ret = _write_data(6, _Data.size() / 2, (uint16_t *) _Data.data());
+    if (!ret) {printf("[INFO] Set back speed cmd send failed!\n");}
+    else {printf("[INFO] Set back speed cmd send succed!\n");}
 }
 
 /**
- * 向下运动，相对运动（PR0），单位：转
- * 设置指令: 01 10 62 00 00 06 0C 00 41 00 01 86 A0 00 C8 00 32 00 32
- * 00 41 表示相对运动 见PR9.00 / 00 01 86 A0 代表100000转  00 01为高位 86 A0为低位 见PR9.01（高位）及PR9.02（低位）
- * 00 C8 代表速度 / 00 32 代表加速度 / 00 32 代表减速度
- * 运动指令： 01 06 60 02 00 10
+ * dis为上升距离，单位mm
+ * aim_speed为目标速度
  */
-void LiftDriver::MoveDown(int32_t round) {
-    if(running) return; // 电机正在运行
-    running = true; // 电机启动
-
-    usleep(1000 * 50); // 延时
-    std::vector<unsigned char> _Data = {0x01, 0x10, 0x62, 0x00, 0x00, 0x06, 0x0C, 0x00, 0x41};
-    // 脉冲数
-    _Data.push_back(round >> 24);
-    _Data.push_back(round >> 16);
-    _Data.push_back(round >> 8 );
-    _Data.push_back(round >> 0 );
-
-    // 速度/加速度/减速度
-    _Data.push_back(aim_speed >> 8);
-    _Data.push_back(aim_speed >> 0);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
-
-    // CRC校验
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-//    for(auto i : _Data) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data);
-
-    usleep(1000 * 50); // 等待50ms
-
-    // PR0运行
-    std::vector<unsigned char> _Data1 = {0x01, 0x06, 0x60, 0x02, 0x00, 0x10};
-    ret = ModbusCRC16(_Data1, _Data1.size());
-    _Data1.push_back(ret >> 8);
-    _Data1.push_back(ret >> 0);
-
-//    printf("\n");
-//    for(auto i : _Data1) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data1);
-
-//    MoveDone(); // 阻塞到移动完成
-//    running = true;
-    usleep(1000 * 50);
-}
-
-/**
- * 向上运动，绝对运动（PR0）
- * round为脉冲数
- */
-void LiftDriver::MoveUpABS(int32_t round) {
-    usleep(1000 * 10); // 延时
-    round = -round; // 向上时脉冲数为负
-    std::vector<unsigned char> _Data = {0x0A, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0xF4, 0x01, 0xF4, 0x01, 0x05, 0x00, 0x00, 0x00};
+void LiftDriver::MoveUpABS(int32_t dis) {
+    printf("[DEBUG] MoveUPABS\n");
+    std::vector<unsigned char> _Data = {0x0A, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0xF4, 0x01, 0xF4, 0x01};
 //    std::vector<unsigned char> _Data = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-    // 脉冲数
-//    _Data.push_back(round >> 24);
-//    _Data.push_back(round >> 16);
-//    _Data.push_back(round >> 8 );
-//    _Data.push_back(round >> 0 );
 
-    // 速度/加速度/减速度
-//    _Data.push_back(aim_speed >> 8);
-//    _Data.push_back(aim_speed >> 0);
-//    _Data.push_back(0x00);
-//    _Data.push_back(0x32);
-//    _Data.push_back(0x00);
-//    _Data.push_back(0x32);
+    // 设置位置，先发低位后发高位
+    _Data[0] = dis >> 0;
+    _Data[1] = dis >> 8;
+    _Data[2] = dis >> 16;
+    _Data[3] = dis >> 24;
 
-//    for(auto i : _Data) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
+    // 设置速度，先发低位后发高位
+    _Data[4] = aim_speed >> 0;
+    _Data[5] = aim_speed >> 8;
+    _Data[6] = aim_speed >> 16;
+    _Data[7] = aim_speed >> 24;
+
+    for(auto i : _Data) {
+        printf("%.2X ", i);
+    }
+    printf("\n");
 
     int ret = _write_data(0, _Data.size() / 2, (uint16_t *) _Data.data());
-    printf("%zu\n", _Data.size());
-//    if (!ret) return false;
+    if (!ret) {printf("[INFO] Move cmd send failed!\n");}
+    else {printf("[INFO] Move cmd send succed!\n");}
+
+    Move(); // 发送移动指令
 
     running = true;
-    usleep(1000 * 100); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
+    usleep(1000 * 50); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
 }
 
-void LiftDriver::Test() {
-
-    std::vector<unsigned char> _Data = {0x01 << 3, 0x00};//4:stop 5:up 6:down   D0:指定距离，unit:mm（先发启动指令）
-
-    int ret = _write_data(8, _Data.size() / 2, (uint16_t *) _Data.data());
-    printf("%d\n", ret);
-//    printf("%zu\n", _Data.size());
-
-    usleep(1000 * 100); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
-}
-
-/**
- * 绝对位置运动，单位：mm
- * @param pose： 目标位置
- */
-void LiftDriver::MoveABS(float pose) {
-    int32_t round = pose *4000; // 1mm-4000脉冲 —— 丝杠1转50mm，电机减速比是20
-    MoveUpABS(round);
-}
-
-/**
- * 向下运动，绝对运动（PR1），单位：转
- */
-void LiftDriver::MoveDownABS(int32_t round) {
-    std::vector<unsigned char> _Data = {0x01, 0x10, 0x62, 0x10, 0x00, 0x06, 0x0C, 0x00, 0x01}; // 第四个字节为0x10 最后一个字节为0x01
-    // 脉冲数
-    _Data.push_back(round >> 24);
-    _Data.push_back(round >> 16);
-    _Data.push_back(round >> 8 );
-    _Data.push_back(round >> 0 );
-
-    // 速度/加速度/减速度
-    _Data.push_back(aim_speed >> 8);
-    _Data.push_back(aim_speed >> 0);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
-    _Data.push_back(0x00);
-    _Data.push_back(0x32);
-
-    // CRC校验
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-//    for(auto i : _Data) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data);
-
-    usleep(50000 * 10); // 等待50ms
-
-    // PR0运行
-    std::vector<unsigned char> _Data1 = {0x01, 0x06, 0x60, 0x02, 0x00, 0x12};
-    ret = ModbusCRC16(_Data1, _Data1.size());
-    _Data1.push_back(ret >> 8);
-    _Data1.push_back(ret >> 0);
-
-//    printf("\n");
-//    for(auto i : _Data1) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    serial_port->Write(_Data1);
-
-//    MoveDone(); // 阻塞到移动完成
-    running = true;
-    usleep(1000 * 100); // 运动指令发出后，延时100ms才可读取速度，等待电机运动
+void LiftDriver::Move() {
+    SendCmd(0);
 }
 
 void LiftDriver::BackHome() {
-
-    usleep(1000 * 50); // 等待50ms
-    // 先切换到回零模式
-    std::vector<unsigned char> _Data = {0x01, 0x06, 0x60, 0x0A, 0x00, 0x01};
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-    serial_port->Write(_Data);
-
-    usleep(1000 * 50); // 等待50ms
-
-    // 设置回零速度
-    std::vector<unsigned char> _Data1 = {0x01, 0x06, 0x60, 0x0F, 0x01, 0x2C};
-    ret = ModbusCRC16(_Data1, _Data1.size());
-    _Data1.push_back(ret >> 8);
-    _Data1.push_back(ret >> 0);
-
-    serial_port->Write(_Data1);
-
-    usleep(1000 * 50); // 等待50ms
-
-    // 回零
-    std::vector<unsigned char> _Data2 = {0x01, 0x06, 0x60, 0x02, 0x00, 0x20};
-    ret = ModbusCRC16(_Data2, _Data2.size());
-    _Data2.push_back(ret >> 8);
-    _Data2.push_back(ret >> 0);
-
-    serial_port->Write(_Data2);
-
-    MoveDone(); // 阻塞到移动完成
+    SendCmd(1);
 }
 
 void LiftDriver::Stop() {
-    usleep(1000 * 50);
-    std::vector<unsigned char> _Data = {0x01, 0x06, 0x60, 0x02, 0x00, 0x40};
-
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-    serial_port->Write(_Data);
+    SendCmd(3);
 }
 
+
+void LiftDriver::MoveUp() {
+    SendCmd(4);
+}
+
+void LiftDriver::MoveDown() {
+    SendCmd(5);
+}
+
+/**
+ * 地址8，低8位为控制指令
+ * 1：目标位置移动
+ * 2：回原点
+ * 3：无
+ * 4：停止
+ * 5：上升
+ * 6：下降
+ */
+void LiftDriver::SendCmd(int mode) {
+
+    std::vector<unsigned char> _Data = {(unsigned char)(0x01 << mode), 0x00};
+
+    int ret = _write_data(8, _Data.size() / 2, (uint16_t *) _Data.data());
+    printf("%d\n", ret);
+
+    usleep(1000 * 50); // 指令发出后，延时100ms
+}
+
+/**
+ * 地址9
+ * 1：指定位置移动完成
+ * 2：回原点完成
+ * 3：第1轴使能
+ * 4：第2轴使能
+ */
+
+/**
+ * 地址10&11，32位
+ * 第1轴，当前位置，单位为脉冲
+ */
+
+/**
+ * 地址12&13，32位
+ * 第2轴，当前位置，单位为脉冲
+ */
 
 int32_t LiftDriver::GetPose() {
     usleep(1000 * 50); // 延时50ms再发送数据
@@ -350,119 +176,57 @@ int16_t LiftDriver::GetSpeed() {
     usleep(1000 * 50); // 等待10ms
     std::vector<unsigned char> _Data = {0x01, 0x03, 0x0B, 0x09, 0x00, 0x01};
 
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
-
-    serial_port->Write(_Data);
-
-//    printf("\n");
-//    for(auto i : _Data) {
-//        printf("%.2X ", i);
-//    }
-//    printf("\n");
-
-    // 延时读取数据
-    usleep(1000 * 50); // 等待50ms
-
-    int16_t speed = 0;
-
-    try {
-        serial_port->Read(read_buffer, 0, ms_timeout) ; // 0表示在超时时间内尽可能多的读取数据
-    }
-    catch (const ReadTimeout&) { // 超时即触发异常，注意此处的超时并不是错误
-        int len = read_buffer.size();
-//        printf("len: %d\n", len);
-        if (len == 7) { // 正确接收到9个响应字节
-//            printf("Rx:");
-//            for (int i = 0; i < len; i++)
-//                printf("%.2X ", read_buffer[i]);
-//            puts("");
-
-            speed |= (int32_t)read_buffer[3] << 8;
-            speed |= (int32_t)read_buffer[4] << 0;
-
-            cur_speed = speed; // 保存当前速度
-//            printf("Speed: %d\n", speed);
-            return speed;
-        }
-    }
-
     return -1; // 未读取到速度
 }
 
 /**
- * 设置目标速度 1mm/s —— 24转/分钟
- * @param speed_ 单位：mm/s
+ * 设置目标速度
+ * @param speed 单位：mm/s
  */
 void LiftDriver::SetSpeed(uint32_t speed) {
-    aim_speed = speed * 24;
+    aim_speed = speed;
 }
 
 void LiftDriver::GetState() {
-    std::vector<unsigned char> _Data = {0x01, 0x03, 0x0B, 0x05, 0x00, 0x01};
+    uint8_t buff[2] = {0};
+    // 读取所有控制器寄存器, 并存入MantraDevice Register
+    if (!m_master_->modbusReadHoldReg(1, 9, 1, (uint16_t *)buff)) {
+        throw runtime_error("\033[1;31mFail to read all register from controller!\033[0m\n");
+    }
 
-    unsigned short ret = ModbusCRC16(_Data, _Data.size());
-    _Data.push_back(ret >> 8);
-    _Data.push_back(ret >> 0);
+    if(buff[0] & (0x01 << 1)) {
+//        printf("Back Home Done\n");
+        back_home_done = true;
+    }
 
-    serial_port->Write(_Data);
+    move_done_bit = buff[0] & (0x01 << 0);
+//    if(move_done_bit) {
+////        printf("[DEBUG] done\n");
+//    }
+//    else printf("[ERROR] not done\n");
+//    if(move_done_bit) {
+//        printf("Move Done\n");
+//        move_done_bit = 1;
+//    }
 
-//    printf("\nTx:");
-//    for(auto i : _Data) {
+//    for(auto i : buff) {
 //        printf("%.2X ", i);
 //    }
 //    printf("\n");
-
-    usleep(1000 * 50); // 延时50ms再读取数据
-
-    int32_t round = 0; // 电机当前位置（脉冲数）
-
-    try {
-        serial_port->Read(read_buffer, 0, ms_timeout) ; // 0表示在超时时间内尽可能多的读取数据
-    }
-    catch (const ReadTimeout&) { // 超时即触发异常，注意此处的超时并不是错误
-        int len = read_buffer.size();
-//        printf("len: %d\n", len);
-        if (len == 9) { // 正确接收到9个响应字节
-//            printf("Rx:");
-//            for (int i = 0; i < len; i++)
-//                printf("%.2X ", read_buffer[i]);
-//            puts("");
-        }
-    }
 }
 
 /**
  * 通过读取速度判断是否运动完成，完成前阻塞
+ * 说明：发出运动指令后，PLC控制器会先将地址9中"指定位置移动完成"标志位清0，
+ * 判断此值是否为变为1即可判断电机是否运动完成
  */
 void LiftDriver::MoveDoneBlocking() {
     bool move_flag = false;
     int cnt = 0; // FIXME 调试用
     uint64_t wait_cnt = 0; // 等待电机运动
+    uint8_t move_done_bit_last = -1;
     while(true) { // 阻塞直到电机运动完成或急停
         cnt++;
-
-        if(!move_flag && cur_speed != 0) { // 未运动->运动 NOTE：若电机未实际转动，无法进入此判断！！
-            printf("[DEBUG] start move...\n");
-            move_flag = true;
-        }
-        else if(!move_flag && cur_speed == 0) { // 电机未转动，正常情况下应该在一定延时后运动，若未运动，说明发送运动指令失败
-            // 若长时间无法从为运动->运动，那么跳出循环
-            usleep(1000 * 10);
-            wait_cnt++;
-//            printf("[DEBUG] wait cnt:%d\n", wait_cnt);
-            if(wait_cnt > 150) { // 约等待1s，还未运行
-                printf("[INFO] Motor has not been running!\n");
-                break;
-            }
-        }
-        else if(move_flag && cur_speed == 0) { // 运动->停止
-            printf("[DEBUG] move done.\n");
-            move_flag = false;
-            break; // 跳出循环，退出服务函数
-        }
-
         if(stop_flag) { // 急停
             printf("[DEBUG] emergency stop.\n");
 //            stop_flag = false;
@@ -470,32 +234,25 @@ void LiftDriver::MoveDoneBlocking() {
             break;
         }
 
-//        if(cnt > 100) { // FIXME 调试用
-//            cnt = 0;
-//            printf("blocking\n");
-//        }
-
-        usleep(1000 * 10);
-    }
-}
-
-/**
- * 通过读取速度判断是否运动完成，主循环中调用，非阻塞
- */
-bool LiftDriver::MoveDone() {
-    if(running) {
-//        printf("\nrunning...\n");
-//        usleep(1000 * 50); // 运动指令发出后，延时100ms再读取速度，等待电机运动
-        int16_t speed_ = GetSpeed();
-        if(speed_ == 0) {
-            running = false;
-            printf("\nMove Done!\n");
+//        printf("[DEBUG] %d\n", move_done_bit);
+        if(move_done_bit && move_done_bit_last) { // 电机运动完成
+            printf("[DEBUG] done\n");
+//            break;
         }
+        else printf("[ERROR] not done\n");
+
+        if(cnt > 100) { // FIXME 调试用
+            cnt = 0;
+            printf("[DEBUG] %d\n", move_done_bit);
+            printf("blocking\n");
+        }
+
+        move_done_bit_last = move_done_bit; // 保存上次状态
     }
 }
 
-
-bool LiftDriver::LiftControl(lift_driver::LiftCtl::Request  &req, lift_driver::LiftCtl::Response &res) {
+bool LiftDriver::LiftControl(lift_driver::LiftCtl::Request &req, lift_driver::LiftCtl::Response &res) {
+    printf("[DEBUG] service\n");
     if(req.command == "Stop") {
         printf("\n[INFO] Lift stop.\n");
         stop_flag = true;
@@ -522,10 +279,10 @@ bool LiftDriver::LiftControl(lift_driver::LiftCtl::Request  &req, lift_driver::L
     }
     // 绝对运动的pose单位为mm
     else if(req.command == "Move") {
-        if (req.pose >= 0 && req.pose <= 2400) { // 限制升降机构运动范围为0-2.4米
+        if (req.pose >= 0 && req.pose <= 2000) { // 限制升降机构运动范围为0-2.0米
             printf("\n[INFO] Lift MoveABS to pose: %.2f.\n", req.pose);
             move_abs_flag = true;
-            move_abs_round = req.pose * 4000; // 1mm-4000脉冲 —— 丝杠1转50mm，电机减速比是20
+//            move_abs_round = req.pose * 4000; // 1mm-4000脉冲 —— 丝杠1转50mm，电机减速比是20
 
             MoveDoneBlocking(); // 阻塞直到运动完成
             running = false; // 电机停止
@@ -589,33 +346,4 @@ bool LiftDriver::LiftPose(lift_driver::LiftPose::Request  &req, lift_driver::Lif
     }
 
     return true;
-}
-
-/**
- * ModbusCRC16校验
- */
-unsigned short LiftDriver::ModbusCRC16(std::vector<unsigned char> &buff, uint16_t len)
-{
-    unsigned short tmp = 0xffff;
-    unsigned short ret1 = 0;
-
-    for(int n = 0; n < len; n++) { /*要校验的位数为buff.size()个*/
-        tmp = buff[n] ^ tmp;
-        for(int i = 0; i < 8; i++) {  /*此处的8 -- 指每一个char类型又8bit，每bit都要处理*/
-            if(tmp & 0x01) {
-                tmp = tmp >> 1;
-                tmp = tmp ^ 0xa001;
-            }
-            else{
-                tmp = tmp >> 1;
-            }
-        }
-    }
-    /*CRC校验后的值*/
-//    printf("%X\n",tmp);
-    /*将CRC校验的高低位对换位置*/
-    ret1 = tmp >> 8;
-    ret1 = ret1 | (tmp << 8);
-//    printf("ret: %X\n", ret1);
-    return ret1;
 }

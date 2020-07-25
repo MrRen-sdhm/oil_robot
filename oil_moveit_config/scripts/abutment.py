@@ -119,7 +119,7 @@ class OilPickup:
         arm.set_goal_position_tolerance(0.001)
         arm.set_goal_orientation_tolerance(0.01)
 
-        arm.set_max_velocity_scaling_factor(0.1)
+        arm.set_max_velocity_scaling_factor(0.5)
         arm.set_max_acceleration_scaling_factor(0.5)
 
         arm.set_planning_time(0.08) # 规划时间限制为2秒
@@ -706,10 +706,66 @@ if __name__ == "__main__":
     # oil_pickup.lift_control_client("Move", 1600)
 
     # 机械臂运动到固定关节位置
-    oil_pickup.go_to_joint_state([0.1, -0.155, 0.027, 0.708, 0.353, 0.279, 0.0])
+
+
+    ######  前进
+    oil_pickup.group.set_named_target('look')
+    oil_pickup.group.go()
+    rospy.sleep(10)
+
+    oil_pickup.group.set_named_target('back5')
+    oil_pickup.group.go()
+    # rospy.sleep(10)
+
+    oil_pickup.group.set_named_target('back4')
+    oil_pickup.group.go()
+    # rospy.sleep(1)
+
+    oil_pickup.group.set_named_target('back3')
+    oil_pickup.group.go()
+    # rospy.sleep(1)
+
+    oil_pickup.group.set_named_target('back2')
+    oil_pickup.group.go()
+    # rospy.sleep(1)
+
+    oil_pickup.group.set_named_target('back1')
+    oil_pickup.group.go()
+
+
+
+    ######  退回
+    # oil_pickup.group.set_named_target('back1')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
+
+    # oil_pickup.group.set_named_target('back2')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
+
+    # oil_pickup.group.set_named_target('back3')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
+
+    # oil_pickup.group.set_named_target('back4')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
+
+    # oil_pickup.group.set_named_target('back5')
+    # oil_pickup.group.go()
+    # rospy.sleep(1)
+
+
+
+
+
+    # oil_pickup.group.set_named_target('p1')
+    # oil_pickup.group.go()
+    # rospy.sleep(1)
+    # oil_pickup.go_to_joint_state([0.1, 0.0, 0.027, 0.708, 0.353, 0.279, 0.0])
 
     # 机械臂末端前伸
-    oil_pickup.cartesian_move(0.1, 0.3)
+    # oil_pickup.cartesian_move(0.1, 0.3)
 
 
 

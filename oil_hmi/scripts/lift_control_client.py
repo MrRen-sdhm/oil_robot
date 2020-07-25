@@ -10,7 +10,7 @@ def lift_control_client(command, pose):
     else:
         pose = int(pose)
 
-    rospy.wait_for_service('lift_control')
+    rospy.wait_for_service('lift_control', timeout=5)
     try:
         lift_control = rospy.ServiceProxy('lift_control', LiftCtl)
         resp = lift_control(command, pose)
@@ -20,7 +20,7 @@ def lift_control_client(command, pose):
 
 
 def lift_status_client(command):
-    rospy.wait_for_service('lift_status')
+    rospy.wait_for_service('lift_status', timeout=5)
     try:
         lift_status = rospy.ServiceProxy('lift_status', LiftStat)
         resp = lift_status(command)
@@ -30,7 +30,7 @@ def lift_status_client(command):
 
 
 def lift_pose_client(command):
-    rospy.wait_for_service('lift_pose')
+    rospy.wait_for_service('lift_pose', timeout=5)
     try:
         lift_pose = rospy.ServiceProxy('lift_pose', LiftPose)
         resp = lift_pose(command)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     if (command != "Stop") and (command != "Home") and (command != "Running") and (command != "Move") and (command != "MoveUp") and (command != "MoveDown") :
         print "[ERROR] Supported command: Stop/Home/Running/Move/MoveUp/MoveDown"
     elif command == "Move" and pose == None:
-        print "[ERROR] Please specify the pose [0-24000]"
+        print "[ERROR] Please specify the pose [0-2000]"
     else:
         print "[SRVICE] Requesting %s" % command
         print "[SRVICE] Result = %s" % lift_control_client(command, pose)

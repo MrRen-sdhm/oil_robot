@@ -1,5 +1,5 @@
 controller_list:
-  - name: oil_description/arm
+  - name: oil/arm
     action_ns: ''
     type: FollowJointTrajectory
     default: true

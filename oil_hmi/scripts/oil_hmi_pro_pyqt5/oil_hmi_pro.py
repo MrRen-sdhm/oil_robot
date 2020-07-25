@@ -129,7 +129,7 @@ class SubThread(QtCore.QThread):
                 curr_pose = xyz + rpy  # 实时获取当前位置
 
                 # 获取升降机构位置
-                lift_cur_pose = lift_pose_client("Pose")
+                # lift_cur_pose = lift_pose_client("Pose")
                 # 升降机构急停指令
                 if lift_stop_flag:  # 急停，因升降机构运动为阻塞函数，不可在MoveThread中发急停指令
                     lift_stop_flag = False
@@ -462,7 +462,7 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
         value = self.horizontalSlider.value()
         change_vel = True  # 速度调整标志置位
         vel_scaling = float(value) / 100.0  # 更新当前速度比例    
-        self.label_8.setText("Speed {:d}%".format(value))
+        self.label_33.setText("Speed {:d}%".format(value))
 
     def movej_step_change(self):
         mode = self.comboBox.currentText()[5:8]

@@ -10,12 +10,10 @@
 #include "lift_driver/LiftStat.h"
 #include "lift_driver/LiftPose.h"
 
-#include "SerialPort.h"
 #include "modbusadapter.h"
 
 #include <vector>
 
-using namespace LibSerial;
 using namespace std;
 
 class LiftDriver{
@@ -24,10 +22,12 @@ public:
     ~LiftDriver();
 
     void Init(string ip, int port); // 串口初始化
-    void MoveUp(int32_t round); // 向上相对运动
-    void MoveDown(int32_t round); // 向下相对运动
-    void MoveUpABS(int32_t round); // 向上绝对运动
-    void MoveDownABS(int32_t round); // 向下绝对运动
+    void MoveUp(); // 向上持续运动
+    void MoveDown(); // 向下持续运动
+    void MoveUpABS(int32_t dis); // 向上绝对运动
+    void Move();
+
+    void SetBackSpeed(int32_t speed);
 
     void MoveABS(float pose); // 绝对位置运动
     bool MoveDone(); // 检查是否移动完成
@@ -39,11 +39,11 @@ public:
     void SetSpeed(uint32_t speed_); // 设置目标速度
     void GetState(); // 获取当前报警状态
 
-    void Test();
+    void SendCmd(int mode);
 
     bool running = false; // 电机工作标志
     bool stop_flag = false; // 急停标志
-    int16_t aim_speed = 200; // 电机转速，单位：转/分钟
+    int16_t aim_speed = 5; // 电机转速，单位：mm/s
 //    bool srv_running = false; // ros服务运行标志
 
     // 运动控制标志位，目的在于将发送指令的过程放到主循环中
@@ -54,6 +54,9 @@ public:
     bool move_abs_flag = false; // 绝对运动标志
     float move_abs_round = 0; // 绝对运动的脉冲数
     bool back_home_flag = false; // 回零标志位
+
+    bool back_home_done = false;
+    uint8_t move_done_bit = 0;
 
     int32_t cur_pose = 0; // 当前位置，单位：脉冲
     int16_t cur_speed = 0; // 当前速度，单位：转/分钟
@@ -68,10 +71,6 @@ private:
     ros::ServiceServer lift_ctl_service;
     ros::ServiceServer lift_stat_service;
     ros::ServiceServer lift_pose_service;
-
-    SerialPort* serial_port;
-    DataBuffer read_buffer ; // 接收缓冲区
-    size_t ms_timeout = 250 ; // 接收超时，即获取超时时间内的数据
 
     /// modbus相关参数
     ModbusAdapter *m_master_;        // modbus服务器
