@@ -277,19 +277,19 @@ class OilPickup:
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
           pass
 
-    def lift_control_client(command, pose):
-        if pose is None:
-            pose = -1
-        else:
-            pose = int(pose)
+    def lift_control_client(self, command, pose):
+      if pose is None:
+          pose = -1
+      else:
+          pose = int(pose)
 
-        rospy.wait_for_service('lift_control')
-        try:
-            lift_control = rospy.ServiceProxy('lift_control', LiftCtl)
-            resp = lift_control(command, pose)
-            return resp.success
-        except rospy.ServiceException, e:
-            print("[SRVICE] Service call failed: %s" % e)
+      rospy.wait_for_service('lift_driver/lift_control')
+      try:
+          lift_control = rospy.ServiceProxy('lift_driver/lift_control', LiftCtl)
+          resp = lift_control(command, pose)
+          return resp.success
+      except rospy.ServiceException, e:
+          print("[SRVICE] Service call failed: %s" % e)
 
     def get_grasps_client(self):
         rospy.wait_for_service('/gpd_server/detect_grasps', timeout=1)
@@ -703,34 +703,34 @@ if __name__ == "__main__":
 
     # 升降机构运动到指定位置
     # oil_pickup.lift_control_client("Home")
-    # oil_pickup.lift_control_client("Move", 1600)
+    oil_pickup.lift_control_client("Move", 10)
 
     # 机械臂运动到固定关节位置
 
 
     ######  前进
-    oil_pickup.group.set_named_target('look')
-    oil_pickup.group.go()
-    rospy.sleep(10)
-
-    oil_pickup.group.set_named_target('back5')
-    oil_pickup.group.go()
+    # oil_pickup.group.set_named_target('look')
+    # oil_pickup.group.go()
     # rospy.sleep(10)
 
-    oil_pickup.group.set_named_target('back4')
-    oil_pickup.group.go()
-    # rospy.sleep(1)
+    # oil_pickup.group.set_named_target('back5')
+    # oil_pickup.group.go()
+    # # rospy.sleep(10)
 
-    oil_pickup.group.set_named_target('back3')
-    oil_pickup.group.go()
-    # rospy.sleep(1)
+    # oil_pickup.group.set_named_target('back4')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
 
-    oil_pickup.group.set_named_target('back2')
-    oil_pickup.group.go()
-    # rospy.sleep(1)
+    # oil_pickup.group.set_named_target('back3')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
 
-    oil_pickup.group.set_named_target('back1')
-    oil_pickup.group.go()
+    # oil_pickup.group.set_named_target('back2')
+    # oil_pickup.group.go()
+    # # rospy.sleep(1)
+
+    # oil_pickup.group.set_named_target('back1')
+    # oil_pickup.group.go()
 
 
 

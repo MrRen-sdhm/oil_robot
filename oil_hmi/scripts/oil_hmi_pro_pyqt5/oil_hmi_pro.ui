@@ -51,9 +51,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>380</y>
+     <y>360</y>
      <width>415</width>
-     <height>181</height>
+     <height>201</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -87,7 +87,7 @@
       <x>10</x>
       <y>40</y>
       <width>395</width>
-      <height>131</height>
+      <height>151</height>
      </rect>
     </property>
    </widget>
@@ -98,7 +98,7 @@
      <x>10</x>
      <y>60</y>
      <width>251</width>
-     <height>311</height>
+     <height>291</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -1957,7 +1957,7 @@
      <x>274</x>
      <y>60</y>
      <width>151</width>
-     <height>311</height>
+     <height>291</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -1989,7 +1989,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>71</y>
+      <y>46</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -2002,7 +2002,7 @@
     <property name="geometry">
      <rect>
       <x>82</x>
-      <y>71</y>
+      <y>46</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -2011,64 +2011,11 @@
      <string>下降</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_lift_step">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>41</y>
-      <width>74</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="currentIndex">
-     <number>2</number>
-    </property>
-    <item>
-     <property name="text">
-      <string>50 mm</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>20 mm</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>10 mm</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label_1_6">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>28</y>
-      <width>31</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="text">
-     <string>步进</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>177</y>
+      <y>152</y>
       <width>44</width>
       <height>27</height>
      </rect>
@@ -2085,7 +2032,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>178</y>
+      <y>153</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -2107,7 +2054,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>108</y>
+      <y>83</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -2120,7 +2067,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>147</y>
+      <y>122</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -2142,7 +2089,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>83</x>
-      <y>148</y>
+      <y>123</y>
       <width>56</width>
       <height>21</height>
      </rect>
@@ -2164,7 +2111,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>82</x>
-      <y>110</y>
+      <y>83</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -2177,7 +2124,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>244</y>
+      <y>219</y>
       <width>44</width>
       <height>27</height>
      </rect>
@@ -2194,7 +2141,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>245</y>
+      <y>220</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -2216,26 +2163,26 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>275</y>
+      <y>250</y>
       <width>114</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>修改速度 (mm)</string>
+     <string>修改速度</string>
     </property>
    </widget>
    <widget class="QPushButton" name="lift_pose_button">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>208</y>
+      <y>183</y>
       <width>114</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>修改位置 (mm)</string>
+     <string>修改位置</string>
     </property>
    </widget>
   </widget>

@@ -77,7 +77,6 @@ lift_speed_modify_flag = False  # 升降机构抢速度修改按钮
 lift_speed = 0  # 升降机构速度
 lift_down_flag = False  # 升降机构下降标志
 lift_up_flag = False  # 升降机构上升标志
-lift_step = 50  # 升降机构运动步进，单位mm
 lift_cur_pose = 0.0  # 升降机构当前位置
 
 
@@ -129,7 +128,7 @@ class SubThread(QtCore.QThread):
                 curr_pose = xyz + rpy  # 实时获取当前位置
 
                 # 获取升降机构位置
-                # lift_cur_pose = lift_pose_client("Pose")
+                lift_cur_pose = lift_pose_client("Pose")
                 # 升降机构急停指令
                 if lift_stop_flag:  # 急停，因升降机构运动为阻塞函数，不可在MoveThread中发急停指令
                     lift_stop_flag = False
@@ -199,7 +198,7 @@ class MoveThread(QtCore.QThread):
 
             # ##############  升降机构  ################
             global lift_back_home_flag, lift_pose_modify_flag, lift_stop_flag, lift_aim_pose, lift_up_flag, lift_down_flag
-            global lift_speed_modify_flag, lift_speed, lift_step
+            global lift_speed_modify_flag, lift_speed
 
             if lift_back_home_flag:  # 回零点
                 lift_back_home_flag = False
@@ -208,13 +207,13 @@ class MoveThread(QtCore.QThread):
 
             if lift_up_flag:
                 lift_up_flag = False
-                print("Lift move up cmd, step:%dmm" % int(lift_step))
-                lift_control_client("MoveUp", lift_step)  # 此处会阻塞
+                print("Lift move up cmd")
+                lift_control_client("MoveUp", None)  # 此处会阻塞
 
             if lift_down_flag:
                 lift_down_flag = False
                 print("Lift move down cmd, aim pose:", lift_aim_pose)
-                lift_control_client("MoveDown", lift_step)  # 此处会阻塞
+                lift_control_client("MoveDown", None)  # 此处会阻塞
 
             if lift_speed_modify_flag:  # 修改升降机构速度
                 lift_speed_modify_flag = False
@@ -227,17 +226,13 @@ class MoveThread(QtCore.QThread):
                 lift_pose_modify_flag = False
                 print("Lift move abs:", lift_aim_pose)
                 lift_control_client("Move", lift_aim_pose)
-                while True:  # 阻塞到运动完成
-                    if lift_stop_flag:  # 急停，必须在阻塞循环中执行
-                        print("Lift stop cmd")
-                        lift_control_client("Stop", None)
-                        lift_stop_flag = False
-
-                    if not lift_status_client("Running"):  # 检查是否运动完成
-                        print("Lift move done.")
-                        break
-
-                    time.sleep(0.05)
+                # while True:  # 阻塞到运动完成
+                #     if lift_stop_flag:  # 急停，必须在阻塞循环中执行
+                #         print("Lift stop cmd")
+                #         lift_control_client("Stop", None)
+                #         lift_stop_flag = False
+                #
+                #     time.sleep(0.05)
 
             r.sleep()
 
@@ -809,15 +804,12 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
 
     def lift_up(self):
         print("lift up button")
-        global lift_up_flag, lift_step
+        global lift_up_flag
         lift_up_flag = True
-        lift_step = self.comboBox_lift_step.currentText()[0:2]
-        # print("lift_step:", lift_step)
 
     def lift_down(self):
-        global lift_down_flag, lift_step
+        global lift_down_flag
         lift_down_flag = True
-        lift_step = self.comboBox_lift_step.currentText()[0:2]
 
     # 界面数据刷新
     def update(self):

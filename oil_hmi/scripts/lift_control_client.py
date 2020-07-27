@@ -10,9 +10,9 @@ def lift_control_client(command, pose):
     else:
         pose = int(pose)
 
-    rospy.wait_for_service('lift_control', timeout=5)
+    rospy.wait_for_service("lift_driver/lift_control", timeout=5)
     try:
-        lift_control = rospy.ServiceProxy('lift_control', LiftCtl)
+        lift_control = rospy.ServiceProxy('lift_driver/lift_control', LiftCtl)
         resp = lift_control(command, pose)
         return resp.success
     except rospy.ServiceException, e:
@@ -20,9 +20,9 @@ def lift_control_client(command, pose):
 
 
 def lift_status_client(command):
-    rospy.wait_for_service('lift_status', timeout=5)
+    rospy.wait_for_service('lift_driver/lift_status', timeout=5)
     try:
-        lift_status = rospy.ServiceProxy('lift_status', LiftStat)
+        lift_status = rospy.ServiceProxy('lift_driver/lift_status', LiftStat)
         resp = lift_status(command)
         return resp.success
     except rospy.ServiceException, e:
@@ -30,9 +30,9 @@ def lift_status_client(command):
 
 
 def lift_pose_client(command):
-    rospy.wait_for_service('lift_pose', timeout=5)
+    rospy.wait_for_service('lift_driver/lift_pose', timeout=5)
     try:
-        lift_pose = rospy.ServiceProxy('lift_pose', LiftPose)
+        lift_pose = rospy.ServiceProxy('lift_driver/lift_pose', LiftPose)
         resp = lift_pose(command)
         return resp.pose
     except rospy.ServiceException, e:

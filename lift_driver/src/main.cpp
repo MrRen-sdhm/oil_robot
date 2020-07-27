@@ -19,10 +19,10 @@ int main(int argc, char** argv)
 //    printf("[INFO] serial_name:%s\n", serial_name.c_str());
 
     LiftDriver lift_driver(&nh, "192.168.0.50", 502);
-    lift_driver.SetSpeed(50);
+    lift_driver.SetSpeed(5); // 设置速度，仅修改速度变量
+    lift_driver.SetBackSpeed(30); // 先设置回零速度，发送给PLC
 
-#if 1
-    lift_driver.SetBackSpeed(30); // 先设置回零速度
+#if 0
     lift_driver.BackHome(); // 回零
 
     while (true) { // 必须先回零才可进行下一步操作
@@ -34,8 +34,9 @@ int main(int argc, char** argv)
         }
     }
     printf("[INFO] Back home done.\n");
+#else
+//    lift_driver.MoveUpABS(50);
 #endif
-//    lift_driver.MoveUpABS(1588);
 //    lift_driver.Stop();
 
     /// 绝对/相对运动
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
 
 //    lift_driver.GetPose();
 
-#if 0
+#if 1
 
     ros::AsyncSpinner spinner(2); // 使用异步spinner，服务函数将在单独的线程中运行，不会阻塞主线程
     spinner.start();
@@ -51,7 +52,7 @@ int main(int argc, char** argv)
     /** 主循环负责与电机通信，所有收发数据均要在主循环中完成，不可在ROS服务回调函数中发送命令，否则指令可能发送失败 **/
     while(ros::ok()) {
         /** 读取数据 **/
-//        lift_driver.GetPose(); // 获取当前位置
+        lift_driver.GetPose(); // 获取当前位置
 //        lift_driver.GetSpeed(); // 获取当前速度
         lift_driver.GetState(); // 获取当前速度
 
@@ -62,19 +63,17 @@ int main(int argc, char** argv)
         }
 
         if(lift_driver.move_up_flag) {
-//            lift_driver.MoveUp(lift_driver.move_up_round);
-//            lift_driver.move_up_flag = false;
+            lift_driver.MoveUp();
+            lift_driver.move_up_flag = false;
         }
 
         if(lift_driver.move_down_flag) {
-//            lift_driver.MoveDown(lift_driver.move_down_round);
-//            lift_driver.move_down_flag = false;
+            lift_driver.MoveDown();
+            lift_driver.move_down_flag = false;
         }
 
         if(lift_driver.move_abs_flag) {
-//            lift_driver.MoveUpABS(lift_driver.move_abs_round);
-            lift_driver.MoveUpABS(2);
-//            printf("[DEBUG] move abs\n");
+            lift_driver.MoveUpABS(lift_driver.move_abs_dis);
             lift_driver.move_abs_flag = false;
         }
 

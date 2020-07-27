@@ -2,8 +2,8 @@
 // Created by MrRen-sdhm on 20-06-29.
 //
 
-#ifndef QRDRIVER_H
-#define QRDRIVER_H
+#ifndef LIFT_DRIVER_H
+#define LIFT_DRIVER_H
 
 #include "ros/ros.h"
 #include "lift_driver/LiftCtl.h"
@@ -28,15 +28,14 @@ public:
     void Move();
 
     void SetBackSpeed(int32_t speed);
+    void SetSpeed(uint32_t speed_); // 设置目标速度
 
-    void MoveABS(float pose); // 绝对位置运动
-    bool MoveDone(); // 检查是否移动完成
     void MoveDoneBlocking(); // 阻塞到移动完成
+    void BackDoneBlocking(); // 阻塞到回零完成
     void BackHome(); // 回原点
     void Stop(); // 急停
-    int32_t GetPose(); // 获取当前位置
-    int16_t GetSpeed(); // 获取当前速度
-    void SetSpeed(uint32_t speed_); // 设置目标速度
+
+    void GetPose(); // 获取当前位置
     void GetState(); // 获取当前报警状态
 
     void SendCmd(int mode);
@@ -44,15 +43,12 @@ public:
     bool running = false; // 电机工作标志
     bool stop_flag = false; // 急停标志
     int16_t aim_speed = 5; // 电机转速，单位：mm/s
-//    bool srv_running = false; // ros服务运行标志
 
     // 运动控制标志位，目的在于将发送指令的过程放到主循环中
     bool move_up_flag = false; // 向上相对运动标志
-    float move_up_round = 0; // 相对运动的脉冲数
     bool move_down_flag = false; // 向下相对运动标志
-    float move_down_round = 0; // 相对运动的脉冲数
     bool move_abs_flag = false; // 绝对运动标志
-    float move_abs_round = 0; // 绝对运动的脉冲数
+    float move_abs_dis = 0; // 绝对运动的距离，单位mm
     bool back_home_flag = false; // 回零标志位
 
     bool back_home_done = false;
@@ -62,9 +58,7 @@ public:
     int16_t cur_speed = 0; // 当前速度，单位：转/分钟
 
 private:
-    unsigned short ModbusCRC16(std::vector<unsigned char> &buff, uint16_t len); // ModbusCRC16校验
     bool LiftControl(lift_driver::LiftCtl::Request  &req, lift_driver::LiftCtl::Response &res);
-    bool LiftStatus(lift_driver::LiftStat::Request  &req, lift_driver::LiftStat::Response &res);
     bool LiftPose(lift_driver::LiftPose::Request  &req, lift_driver::LiftPose::Response &res);
 
     ros::NodeHandle nh_;
@@ -87,4 +81,4 @@ private:
 };
 
 
-#endif //QRDRIVER_H
+#endif //LIFT_DRIVER_H

@@ -5,7 +5,7 @@
     <arg name="rviz" default="true" />
     <arg name="show_pose" default="false" />
     <arg name="show_traj" default="false" />
-    <arg name="hmi" default="true" />  <!--FIXME-->
+    <arg name="hmi" default="true" />
 
     <!-- robot_ip: IP-address of the robot's socket-messaging server -->
     <!-- <arg name="robot_ip" doc="IP of the controller" /> -->
@@ -34,5 +34,8 @@
 
     <!-- move server -->
     <node name="oil_move_server" pkg="oil_application" type="oil_move_server.py" respawn="true" output="screen" />
+
+    <!-- lift_driver -->
+    <include file="$(find lift_driver)/launch/lift_driver.launch" />
 
 </launch>
