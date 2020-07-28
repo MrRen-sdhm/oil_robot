@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 
-<launch>  
+<launch>
+    <arg name="fake" default="true" />
+
     <!-- oil hmi basic-->
     <!-- <node name="oil_hmi_basic" pkg="oil_hmi" type="oil_hmi_basic.py" respawn="false" output="screen" /> -->
 
     <!-- oil hmi -->
-    <node name="oil_hmi_pro" pkg="oil_hmi" type="oil_hmi_pro.py" respawn="false" required="true" output="screen" />
+    <node name="oil_hmi_pro" pkg="oil_hmi" type="oil_hmi_pro.py" respawn="false" required="true" output="screen">
+        <param name="fake" value="$(arg fake)" />
+    </node>
 
     <!-- move server -->
     <!-- <node name="oil_move_server" pkg="oil_application" type="oil_move_server.py" respawn="true" output="screen" /> -->

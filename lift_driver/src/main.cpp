@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 //    printf("[INFO] serial_name:%s\n", serial_name.c_str());
 
     LiftDriver lift_driver(&nh, "192.168.0.50", 502);
-    lift_driver.SetSpeed(5); // 设置速度，仅修改速度变量
+    lift_driver.SetSpeed(20); // 设置速度，仅修改速度变量
     lift_driver.SetBackSpeed(30); // 先设置回零速度，发送给PLC
 
 #if 0

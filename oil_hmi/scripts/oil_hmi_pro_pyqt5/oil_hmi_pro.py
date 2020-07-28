@@ -36,6 +36,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
 from PyQt5.QtGui import QIcon
 
+fake = False  # 虚拟执行标志
+
 """
 python中内置数据类型（int、list、dict）的操作都是原子的，多线程读写不需要加锁
 """
@@ -128,7 +130,8 @@ class SubThread(QtCore.QThread):
                 curr_pose = xyz + rpy  # 实时获取当前位置
 
                 # 获取升降机构位置
-                lift_cur_pose = lift_pose_client("Pose")
+                if not fake:
+                    lift_cur_pose = lift_pose_client("Pose")  # 需要升降机构驱动运行，仿真时不可用
                 # 升降机构急停指令
                 if lift_stop_flag:  # 急停，因升降机构运动为阻塞函数，不可在MoveThread中发急停指令
                     lift_stop_flag = False
@@ -1002,6 +1005,8 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
 
 if __name__ == "__main__":
     rospy.init_node('oil_hmi_pro')
+
+    fake = rospy.get_param("/oil_hmi_pro/fake", default=False)
 
     app = QApplication(sys.argv)
 

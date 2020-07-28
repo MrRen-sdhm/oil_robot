@@ -30,12 +30,14 @@
     </include>
 
     <!-- robot hmi -->
-    <include if="$(arg hmi)" file="$(find oil_hmi)/launch/oil_hmi.launch" />
+    <include if="$(arg hmi)" file="$(find oil_hmi)/launch/oil_hmi.launch" >
+      <arg name="fake" value="$(arg fake)" />
+    </include>
 
     <!-- move server -->
     <node name="oil_move_server" pkg="oil_application" type="oil_move_server.py" respawn="true" output="screen" />
 
     <!-- lift_driver -->
-    <include file="$(find lift_driver)/launch/lift_driver.launch" />
+    <include unless="$(arg fake)" file="$(find lift_driver)/launch/lift_driver.launch" />
 
 </launch>
