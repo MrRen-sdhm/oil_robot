@@ -1,5 +1,6 @@
 <launch>
     <arg name="namespace_prefix" default="oil" />
+    <arg name="fake" default="false" />
 
     <!-- start the Realsense and aruco tracker-->
     <include file="$(find oil_application)/calibration/launch/aruco_tracker.launch" >
@@ -9,7 +10,7 @@
 
     <!-- start the robot -->
     <include file="$(find oil_application)/launch/oil_bringup.launch" >
-        <arg name="fake" value="false" />
+        <arg name="fake" value="$(arg fake)" />
         <arg name="rviz" value="false" />
         <arg name="hmi" value="true" />
     </include>

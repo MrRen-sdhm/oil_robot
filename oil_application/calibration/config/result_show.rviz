@@ -54,14 +54,18 @@ Visualization Manager:
       Frame Timeout: 30
       Frames:
         All Enabled: false
+        abutment_frame:
+          Value: true
         base_link:
           Value: true
-        camera:
-          Value: false
         camera_color_frame:
           Value: false
         camera_color_optical_frame:
           Value: false
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
         camera_link:
           Value: false
         ee_link:
@@ -80,7 +84,7 @@ Visualization Manager:
           Value: false
         link7:
           Value: false
-      Marker Scale: 0.699999988
+      Marker Scale: 1
       Name: TF
       Show Arrows: false
       Show Axes: true
@@ -94,10 +98,16 @@ Visualization Manager:
                   link5:
                     link6:
                       link7:
-                        camera:
-                          {}
                         ee_link:
-                          {}
+                          abutment_frame:
+                            {}
+                          camera_link:
+                            camera_color_frame:
+                              camera_color_optical_frame:
+                                {}
+                            camera_depth_frame:
+                              camera_depth_optical_frame:
+                                {}
       Update Interval: 0
       Value: true
     - Acceleration_Scaling_Factor: 0.5
@@ -133,12 +143,11 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          base_link:
+          abutment_frame:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
-          camera:
+          base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -147,7 +156,6 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           link1:
             Alpha: 1
             Show Axes: false
@@ -228,12 +236,11 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          base_link:
+          abutment_frame:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
-          camera:
+          base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -242,7 +249,6 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           link1:
             Alpha: 1
             Show Axes: false
@@ -350,25 +356,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.95423961
+      Distance: 4.50013447
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0842338353
-        Y: 0.00301926676
-        Z: 0.381454557
+        X: -0.0326087512
+        Y: -0.26454097
+        Z: 1.16427255
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.304796576
+      Pitch: 0.339796573
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.592069089
+      Yaw: 3.18025804
     Saved: ~
 Window Geometry:
   Displays:

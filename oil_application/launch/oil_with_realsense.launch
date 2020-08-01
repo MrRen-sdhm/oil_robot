@@ -4,10 +4,27 @@
     <arg name="fake" default="false" />
 
     <!-- start the Realsense -->
-    <include file="$(find realsense2_viewer)/launch/realsense2_viewer.launch" >
+    <!-- <include file="$(find realsense2_viewer)/launch/realsense2_viewer.launch" >
         <arg name="width" value="640" />
         <arg name="height" value="480" />
-    </include>
+    </include> -->
+    <group ns="camera">
+        <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+            <arg name="serial_no"         value=""/>
+            <arg name="json_file_path"    value=""/>
+            <arg name="color_width"       value="640" />
+            <arg name="color_height"      value="480" />
+            <arg name="color_fps"         value="30" />
+            <arg name="enable_sync"       value="true" />
+            <arg name="enable_color"      value="true"/>
+            <arg name="enable_infra1"     value="false"/>
+            <arg name="enable_infra2"     value="false"/>
+            <arg name="enable_fisheye"    value="false"/>
+            <arg name="enable_gyro"       value="false"/>
+            <arg name="enable_accel"      value="false"/>
+            <arg name="tf_prefix"         value="camera" />
+        </include>
+    </group>
 
     <!-- start the robot-->
     <include file="$(find oil_application)/launch/oil_bringup.launch" >

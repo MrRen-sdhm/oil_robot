@@ -372,7 +372,7 @@ if __name__ == "__main__":
 
     oil_pickup = OilPickup()
 
-    oil_pickup.group.set_named_target('test_4')
+    oil_pickup.group.set_named_target('look')
     oil_pickup.group.go()
 
     # 测试标记坐标转换，显示标记位置
