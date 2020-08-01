@@ -10,11 +10,9 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ​	1. Communicate with robot through Ethernet and use Modbus-TCP protocol
 
-  ​	2. Communicate with lift through Ethernet and use Modbus-TCP protocol
+  ​	2. Communicate with ROS Moveit！through ROS Topic and Action
 
-  ​	3. Communicate with ROS Moveit！through ROS Topic and Action
-
-  ​	4. Communicate with HMI through ROS Topic
+  ​	3. Communicate with HMI through ROS Topic
 
 - **oil_hmi** -- Oil HMI, used to control the oil throug GUI.
 
@@ -42,19 +40,50 @@ This repository contains the following ROS packages of Oil manipulator：
 
 - **oil_application**
 
-  It's a package which Used to implement some application functions of Oil manipulator.
+  It's a package which used to implement some application functions of Oil manipulator.
 
-  Function list：
+  ###### Function list：
 
-  ​	1. Bringup the Oil manipulator.
+  1. Bringup the Oil manipulator.
+2. Oil hand eye calibration by easy_handeye.
+  
+- **lift_driver**
 
-  ​	2. Oil hand eye calibration by easy_handeye.
+  It's a package which used to control the lift.
 
+  ###### Function list：
 
+  1. Communicate with the lift through Ethernet and use Modbus-TCP protocol.
+  2. Provide ROS service to control the lift (Back home/ Move / Stop).
+  3. Provide ROS service to get current position of the lift.
 
-#### Some commands to use the Oil manipulator：
+- **oil_filler_pose**
 
-1、Bringup the robot.
+  This package use Hough circle transformation and RANSACE algorithm to calculate the pose of the docking seat. It depends on Opencv3.0 and PCL1.8.1.
+
+ - **force_driver**
+
+   This is the force sensor driver package, which is written in python2.
+
+   ###### Function list：
+
+   1. Communicate with force sensor through Ethernet and use socket.
+   2. Publish 6-axis data collected by force sensor through ros message.
+
+- **qr_driver**
+
+  This is the QR code recognizer driver package, which is written in cpp.
+
+  ###### Function list：
+
+  1. Communicate with QR code recognizer through RS485.
+  2. Publish 3-axis data collected by QR code recognizer through ros message.
+
+  
+
+## Some commands to use the Oil manipulator
+
+1、Bringup the robot and hmi.
 
 ```bash
 # real robot
@@ -105,11 +134,23 @@ rosrun lift_driver lift_control_client.py "Stop"
    ```bash
    # real robot
    roslaunch oil_application calib_verification.launch
-# fake robot
-   roslaunch oil_application calib_verification.launch fake:=true
    
-   # robot move reference to aruco_marker
+   # fake robot
+   roslaunch oil_application calib_verification.launch fake:=true
+
+   # move reference to aruco_marker
    rosrun oil_application calib_verify.py
    ```
-   
-   
+
+5、Run force_driver
+
+```bash
+roslaunch force_driver force_driver.launch
+```
+
+6、Run qr_driver
+
+```bash
+roslaunch qr_driver qr.launch
+```
+
