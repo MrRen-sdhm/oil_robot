@@ -82,7 +82,7 @@ This repository contains the following ROS packages of Oil manipulator：
 
   1\. Communicate with QR code recognizer through RS485.
   
-2\. Publish 3-axis data collected by QR code recognizer through ros message.
+  2\. Publish 3-axis data collected by QR code recognizer through ros message.
   
   
 
