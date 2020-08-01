@@ -8,11 +8,11 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ###### Function list：
 
-  ​	1. Communicate with robot through Ethernet and use Modbus-TCP protocol
+  1\. Communicate with robot through Ethernet and use Modbus-TCP protocol
 
-  ​	2. Communicate with ROS Moveit！through ROS Topic and Action
+  2\. Communicate with ROS Moveit！through ROS Topic and Action
 
-  ​	3. Communicate with HMI through ROS Topic
+  3\. Communicate with HMI through ROS Topic
 
 - **oil_hmi** -- Oil HMI, used to control the oil throug GUI.
 
@@ -20,15 +20,15 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ###### Function list：
 
-  ​	1. Feedback joint positions of the robot.
+  1\. Feedback joint positions of the robot.
 
-  ​	2. Enabling or Non-Enabling the Robot.
+  2\. Enabling or Non-Enabling the Robot.
 
-  ​	3. Set current position as zero position.
+  3\. Set current position as zero position.
 
-  ​	4. Save current joint positions to xml.
+  4\. Save current joint positions to xml.
 
-  ​	5. Emergency stop of the robot.
+  5\. Emergency stop of the robot.
 
 - **oil_description**
 
@@ -44,8 +44,8 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ###### Function list：
 
-  1. Bringup the Oil manipulator.
-2. Oil hand eye calibration by easy_handeye.
+  1\. Bringup the Oil manipulator.
+  2\. Oil hand eye calibration by easy_handeye.
   
 - **lift_driver**
 
@@ -53,9 +53,9 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ###### Function list：
 
-  1. Communicate with the lift through Ethernet and use Modbus-TCP protocol.
-  2. Provide ROS service to control the lift (Back home/ Move / Stop).
-  3. Provide ROS service to get current position of the lift.
+  1\. Communicate with the lift through Ethernet and use Modbus-TCP protocol.
+  2\. Provide ROS service to control the lift (Back home/ Move / Stop).
+  3\. Provide ROS service to get current position of the lift.
 
 - **oil_filler_pose**
 
@@ -67,8 +67,8 @@ This repository contains the following ROS packages of Oil manipulator：
 
    ###### Function list：
 
-   1. Communicate with force sensor through Ethernet and use socket.
-   2. Publish 6-axis data collected by force sensor through ros message.
+   1\. Communicate with force sensor through Ethernet and use socket.
+   2\. Publish 6-axis data collected by force sensor through ros message.
 
 - **qr_driver**
 
@@ -76,8 +76,8 @@ This repository contains the following ROS packages of Oil manipulator：
 
   ###### Function list：
 
-  1. Communicate with QR code recognizer through RS485.
-  2. Publish 3-axis data collected by QR code recognizer through ros message.
+  1\. Communicate with QR code recognizer through RS485.
+  2\. Publish 3-axis data collected by QR code recognizer through ros message.
 
   
 
