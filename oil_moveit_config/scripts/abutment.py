@@ -578,14 +578,15 @@ class OilPickup:
               maxtries) + " attempts.")
           return None
 
-    def cartesian_move(self, dis, scale=0.3):
+    # axis：0-x 1-y 2-z
+    def cartesian_move(self, dis, axis, scale=0.3):
       group = self.group
       # 前进
       waypoints = []
       wpose = group.get_current_pose().pose
       waypoints.append(deepcopy(wpose))
 
-      wpose = cal_end_pose_by_quat(wpose, dis, 2)
+      wpose = cal_end_pose_by_quat(wpose, dis, axis)
       waypoints.append(deepcopy(wpose))
 
       self.plan_cartesian(waypoints, scale=scale) 
@@ -703,7 +704,7 @@ if __name__ == "__main__":
 
     # 升降机构运动到指定位置
     # oil_pickup.lift_control_client("Home")
-    oil_pickup.lift_control_client("Move", 10)
+    # oil_pickup.lift_control_client("Move", 10)
 
     # 机械臂运动到固定关节位置
 
@@ -764,8 +765,14 @@ if __name__ == "__main__":
     # rospy.sleep(1)
     # oil_pickup.go_to_joint_state([0.1, 0.0, 0.027, 0.708, 0.353, 0.279, 0.0])
 
-    # 机械臂末端前伸
-    # oil_pickup.cartesian_move(0.1, 0.3)
+    # 机械臂末端前伸（z方向）
+    oil_pickup.cartesian_move(dis=0.05, axis=2, scale=0.3)
+
+    # （x方向直线运动）
+    oil_pickup.cartesian_move(dis=0.05, axis=0, scale=0.3)
+
+    # （y方向直线运动）
+    oil_pickup.cartesian_move(dis=0.05, axis=1, scale=0.3)
 
 
 

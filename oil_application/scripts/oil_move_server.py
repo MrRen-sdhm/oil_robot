@@ -44,9 +44,20 @@ def cal_pose_by_dir_vec(start_pose, dir_vec, distance, axis):
     return end_pose
 
 # 通过起点位姿及移动距离计算终点位姿, 为上面两个函数的整合 axis：0-x 1-y 2-z
-def cal_end_pose_by_quat(start_pose, distance, axis):
-    dir_vec = cal_direction_vec(start_pose.orientation)
-    end_pose = cal_pose_by_dir_vec(start_pose, dir_vec, distance, axis)
+# def cal_end_pose_ref_curr_quat(start_pose, distance, axis):
+#     dir_vec = cal_direction_vec(start_pose.orientation)
+#     end_pose = cal_pose_by_dir_vec(start_pose, dir_vec, distance, axis)
+#     return end_pose
+
+# 通过起点位姿及移动距离计算终点位姿, 为上面两个函数的整合 axis：0-x 1-y 2-z
+# 若指定dir_orientation则按照dir_orientation的方向移动xyz坐标，否则按照pose.orientation移动
+def cal_end_pose_by_quat(pose, distance, axis, dir_orientation=None):
+    dir_vec = None
+    if dir_orientation is None: # 未给定dir_orientation，按照pose.orientation移动
+        dir_vec = cal_direction_vec(pose.orientation)
+    else:
+        dir_vec = cal_direction_vec(dir_orientation)
+    end_pose = cal_pose_by_dir_vec(pose, dir_vec, distance, axis)
     return end_pose
 
 # ros格式四元数绕某轴旋转angle弧度，输入为[x,y,z,w]格式，输出也为[x,y,z,w]格式
@@ -128,7 +139,7 @@ class MoveGroup(object):
         rospy.Service('move_to_poses_named', MoveToPosesNamed, self.handle_move_to_poses_named)
         rospy.Service('move_to_pose_shift', MoveToPoseShift, self.handle_move_to_pose_shift)
         rospy.Service('move_to_joint_states', MoveToJointStates, self.handle_move_to_joint_states)
-        rospy.Service('move_ee_z', MoveEEZ, self.handle_move_ee_z)
+        rospy.Service('move_ee', MoveEE, self.handle_move_ee)
         rospy.Service('get_current_pose', GetCurrentPose, self.handle_get_current_pose)
         rospy.Service('get_base_ee_link', GetBaseEELink, self.handle_get_base_ee_link)
         rospy.Service('set_vel_scaling', SetVelScaling, self.handle_set_vel_scaling)
@@ -155,10 +166,10 @@ class MoveGroup(object):
         print("[SRVICE] Go to joint states result:%s" % "Succeed" if ret else "Failed")
         return MoveToJointStatesResponse(ret)
 
-    def handle_move_ee_z(self, req):
-        ret = self.move_ee_z(req.dis, req.scale)
-        print("[SRVICE] Move ee z result:%s" % "Succeed" if ret else "Failed")
-        return MoveEEZResponse(ret)
+    def handle_move_ee(self, req):
+        ret = self.move_ee(req.dis, req.axis, req.ref, req.scale)
+        print("[SRVICE] Move ee result:%s" % "Succeed" if ret else "Failed")
+        return MoveEEResponse(ret)
 
     def handle_get_current_pose(self, req):
         pose = self.get_current_pose()
@@ -329,93 +340,110 @@ class MoveGroup(object):
     # ############## 末端z轴笛卡尔路径规划  ##############
     @staticmethod
     def scale_trajectory_speed(traj, scale):
-      new_traj = RobotTrajectory()
-      new_traj.joint_trajectory = traj.joint_trajectory
+        new_traj = RobotTrajectory()
+        new_traj.joint_trajectory = traj.joint_trajectory
 
-      n_joints = len(traj.joint_trajectory.joint_names)
-      n_points = len(traj.joint_trajectory.points)
-      points = list(traj.joint_trajectory.points)
+        n_joints = len(traj.joint_trajectory.joint_names)
+        n_points = len(traj.joint_trajectory.points)
+        points = list(traj.joint_trajectory.points)
 
-      for i in range(n_points):
-          point = JointTrajectoryPoint()
-          point.positions = traj.joint_trajectory.points[i].positions
+        for i in range(n_points):
+            point = JointTrajectoryPoint()
+            point.positions = traj.joint_trajectory.points[i].positions
 
-          point.time_from_start = traj.joint_trajectory.points[i].time_from_start / scale
-          point.velocities = list(traj.joint_trajectory.points[i].velocities)
-          point.accelerations = list(traj.joint_trajectory.points[i].accelerations)
+            point.time_from_start = traj.joint_trajectory.points[i].time_from_start / scale
+            point.velocities = list(traj.joint_trajectory.points[i].velocities)
+            point.accelerations = list(traj.joint_trajectory.points[i].accelerations)
 
-          for j in range(n_joints):
-              point.velocities[j] = point.velocities[j] * scale
-              point.accelerations[j] = point.accelerations[j] * scale * scale
-          points[i] = point
+            for j in range(n_joints):
+                point.velocities[j] = point.velocities[j] * scale
+                point.accelerations[j] = point.accelerations[j] * scale * scale
+            points[i] = point
 
-      new_traj.joint_trajectory.points = points
-      return new_traj
+        new_traj.joint_trajectory.points = points
+        return new_traj
 
     def plan_cartesian(self, waypoints, scale=1.0, start_state=None):
-      group = self.group
-
-      # 开始笛卡尔空间轨迹规划
-      fraction = 0.0  # 路径规划覆盖率
-      maxtries = 150  # 最大尝试规划次数
-      attempts = 0  # 已经尝试规划次数
-
-      # 设置机器臂运动初始状态
-      if start_state is not None:
-        state = self.robot.get_current_state()
-        state.joint_state.position = list(start_state)
-        group.set_start_state(state)
-      else:
-        group.set_start_state_to_current_state()      
-
-      # 尝试规划一条笛卡尔空间下的路径，依次通过所有路点
-      while fraction < 1.0 and attempts < maxtries:
-          (plan, fraction) = group.compute_cartesian_path(
-              waypoints,  # waypoint poses，路点列表
-              0.005,  # eef_step，终端步进值
-              0.0,  # jump_threshold，跳跃阈值
-              True)  # avoid_collisions，避障规划
-
-          # 尝试次数累加
-          attempts += 1
-
-          # 打印运动规划进程
-          if attempts % 10 == 0:
-              rospy.loginfo("Still trying after " + str(attempts) + " attempts...")
-
-      # 如果路径规划成功（覆盖率>90%）,则开始控制机械臂运动
-      if fraction > 0.9:
-        rospy.loginfo("Cartesian path computed successfully.")
-        plan = self.scale_trajectory_speed(plan, scale)
-        if start_state is None:
-          plan = group.execute(plan)
-          rospy.loginfo("Cartesian path execution complete.")
-          return True
-        else:
-          return plan
-
-      # 如果路径规划失败，则打印失败信息
-      else:
-          rospy.loginfo("Path planning failed with only " + str(fraction) + " success after " + str(
-              maxtries) + " attempts.")
-          return None
-
-    def cartesian_move(self, dis, scale):
-      group = self.group
-      # 前进
-      waypoints = []
-      wpose = group.get_current_pose().pose
-      waypoints.append(deepcopy(wpose))
-
-      wpose = cal_end_pose_by_quat(wpose, dis, 2)
-      waypoints.append(deepcopy(wpose))
-
-      ret = self.plan_cartesian(waypoints, scale=scale)
-      return ret
-    
-    def move_ee_z(self, dis, scale):
         group = self.group
-        ret = self.cartesian_move(dis, scale)
+
+        # 开始笛卡尔空间轨迹规划
+        fraction = 0.0  # 路径规划覆盖率
+        maxtries = 150  # 最大尝试规划次数
+        attempts = 0  # 已经尝试规划次数
+
+        # 设置机器臂运动初始状态
+        if start_state is not None:
+            state = self.robot.get_current_state()
+            state.joint_state.position = list(start_state)
+            group.set_start_state(state)
+        else:
+            group.set_start_state_to_current_state()      
+
+        # 尝试规划一条笛卡尔空间下的路径，依次通过所有路点
+        while fraction < 1.0 and attempts < maxtries:
+            (plan, fraction) = group.compute_cartesian_path(
+                waypoints,  # waypoint poses，路点列表
+                0.005,  # eef_step，终端步进值
+                0.0,  # jump_threshold，跳跃阈值
+                True)  # avoid_collisions，避障规划
+
+            # 尝试次数累加
+            attempts += 1
+
+            # 打印运动规划进程
+            if attempts % 10 == 0:
+                rospy.loginfo("Still trying after " + str(attempts) + " attempts...")
+
+        # 如果路径规划成功（覆盖率>90%）,则开始控制机械臂运动
+        if fraction > 0.9:
+            rospy.loginfo("Cartesian path computed successfully.")
+            plan = self.scale_trajectory_speed(plan, scale)
+            if start_state is None:
+                plan = group.execute(plan)
+                rospy.loginfo("Cartesian path execution complete.")
+                return True
+            else:
+                return plan
+
+        # 如果路径规划失败，则打印失败信息
+        else:
+            rospy.loginfo("Path planning failed with only " + str(fraction) + " success after " + str(
+                maxtries) + " attempts.")
+            return None
+
+    # axis-移动方向  ref-基准坐标系["base_link", "ee_link"]
+    def cartesian_move(self, dis, axis, ref, scale):
+        group = self.group
+        # 前进
+        waypoints = []
+        wpose = group.get_current_pose().pose
+        waypoints.append(deepcopy(wpose))
+
+        # 根据基准坐标系计算终点坐标
+        if ref == "ee_link": # 基于当前末端姿态运动
+            print("cartesian_move reference to ee_link")
+            wpose = cal_end_pose_by_quat(wpose, dis, axis)
+        elif ref == "base_link": # 基于基坐标系运动
+            print("cartesian_move reference to base_link")
+            tmp_pose = geometry_msgs.msg.Pose()
+            tmp_pose.orientation.x = 0
+            tmp_pose.orientation.y = 0
+            tmp_pose.orientation.z = 0
+            tmp_pose.orientation.w = 1
+
+            wpose = cal_end_pose_by_quat(wpose, dis, axis, tmp_pose.orientation) # 按基坐标系方向移动
+
+
+        #   wpose = cal_end_pose_by_quat(wpose, dis, axis)
+        waypoints.append(deepcopy(wpose))
+
+        ret = self.plan_cartesian(waypoints, scale=scale)
+        return ret
+    
+    # axis-移动方向  ref-基准坐标系["base_link", "ee_link"]
+    def move_ee(self, dis, axis, ref, scale):
+        group = self.group
+        ret = self.cartesian_move(dis, axis, ref, scale)
         return ret
 
 

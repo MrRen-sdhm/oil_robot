@@ -61,7 +61,7 @@ add_service_files(
   MoveToPosesNamed.srv
   MoveToJointStates.srv
   MoveToPoseShift.srv
-  MoveEEZ.srv
+  MoveEE.srv
   GetCurrentPose.srv
   GetBaseEELink.srv
   SetVelScaling.srv

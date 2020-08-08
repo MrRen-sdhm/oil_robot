@@ -61,7 +61,9 @@ curr_pose = [0.0]*7  # 当前位置
 movel_axis = None  # MoveL 移动的参考轴
 movel_value = None  # MoveL 移动的距离/角度
 
-move_ee_dis = 0.0  # 末端z轴方向移动距离, 有正负
+move_ee_dis = 0.0  # 末端笛卡尔移动距离, 有正负
+move_ee_axis = 2  # 末端笛卡尔运动方向：x-0 y-1 z-2
+move_ee_ref = "ee_link"  # 末端笛卡尔运动参考坐标系
 move_ee_speed_scale = 0.5  # 末端笛卡尔规划速度比例
 
 moveJ = False  # 关节运动标志
@@ -183,10 +185,10 @@ class MoveThread(QtCore.QThread):
                 move_to_pose_shift(movel_axis, movel_value)
                 print("[INFO] Go to pose shift...")
 
-            if moveE:  # 末端z轴方向线性运动
+            if moveE:  # 末端线性运动
                 moveE = False
-                move_ee_z(move_ee_dis, move_ee_speed_scale)
-                print("[INFO] Move ee z..., dis:%f scale:%f" % (move_ee_dis, move_ee_speed_scale))
+                move_ee(move_ee_dis, move_ee_axis, move_ee_ref, move_ee_speed_scale)
+                print("[INFO] Move ee ..., dis:%f axis:%d ref:%s scale:%f" % (move_ee_dis, move_ee_axis, move_ee_ref, move_ee_speed_scale))
 
             if back_home_flag:  # 回零点
                 back_home_flag = False  # 标志复位
@@ -490,19 +492,113 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
         global move_ee_speed_scale
         move_ee_speed_scale = float(self.comboBox_ee_scale.currentText())
 
-    def move_e_forward(self):
-        global moveE, move_ee_dis
+    def move_ee_z_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
         if not moveE:
             moveE = True
-            move_ee_dis = float(self.comboBox_ee.currentText()[0:4])
-            print("ee_dis:", move_ee_dis)
+            move_ee_axis = 2
+            move_ee_ref = "ee_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee z forward dis:", move_ee_dis)
 
-    def move_e_backward(self):
-        global moveE, move_ee_dis
+    def move_ee_z_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
         if not moveE:
             moveE = True
-            move_ee_dis = -float(self.comboBox_ee.currentText()[0:4])
-            print("ee_dis:", move_ee_dis)
+            move_ee_axis = 2
+            move_ee_ref = "ee_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee z backward dis:", move_ee_dis)
+
+    def move_ee_x_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 0
+            move_ee_ref = "ee_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee x forward dis:", move_ee_dis)
+
+    def move_ee_x_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 0
+            move_ee_ref = "ee_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee x backward dis:", move_ee_dis)
+
+    def move_ee_y_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 1
+            move_ee_ref = "ee_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee y forward dis:", move_ee_dis)
+
+    def move_ee_y_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 1
+            move_ee_ref = "ee_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee y backward dis:", move_ee_dis)
+
+    def move_ee_z_base_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 2
+            move_ee_ref = "base_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee z forward dis:", move_ee_dis)
+
+    def move_ee_z_base_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 2
+            move_ee_ref = "base_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee z backward dis:", move_ee_dis)
+
+    def move_ee_x_base_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 0
+            move_ee_ref = "base_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee x forward dis:", move_ee_dis)
+
+    def move_ee_x_base_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 0
+            move_ee_ref = "base_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee x backward dis:", move_ee_dis)
+
+    def move_ee_y_base_forward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 1
+            move_ee_ref = "base_link"
+            move_ee_dis = float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee y forward dis:", move_ee_dis)
+
+    def move_ee_y_base_backward(self):
+        global moveE, move_ee_dis, move_ee_axis, move_ee_ref
+        if not moveE:
+            moveE = True
+            move_ee_axis = 1
+            move_ee_ref = "base_link"
+            move_ee_dis = -float(self.comboBox_ee.currentText()[0:5])
+            print("move_ee y backward dis:", move_ee_dis)
 
     def joint1_minus(self):
         index = 0
@@ -1006,7 +1102,7 @@ class MyWindow(QtWidgets.QWidget, Ui_Form):
 if __name__ == "__main__":
     rospy.init_node('oil_hmi_pro')
 
-    fake = rospy.get_param("/oil_hmi_pro/fake", default=False)
+    fake = rospy.get_param("/oil_hmi_pro/fake", default=True)
 
     app = QApplication(sys.argv)
 

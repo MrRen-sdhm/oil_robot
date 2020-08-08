@@ -1,4 +1,6 @@
 float64 dis
+int16 axis
+string ref
 float64 scale
 ---
 bool success

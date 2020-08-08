@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function
 import rospy
@@ -80,25 +81,26 @@ def move_to_joint_states(joint_states, test=False):
         return False
 
 
-def move_ee_z(dis, scale, test=False):
+# axis-移动方向  ref-基准坐标系["base_link", "ee_link"]
+def move_ee(dis, axis, ref, scale, test=False):
     print("[SRVICE] Wait for service ...")
     try:
-        rospy.wait_for_service('move_ee_z', timeout=15)
-        print("[SRVICE] Found move ee z states service!")
+        rospy.wait_for_service('move_ee', timeout=15)
+        print("[SRVICE] Found move ee states service!")
     except rospy.ROSException:
-        print("[ERROR] Move ee z service did not started!")
+        print("[ERROR] Move ee service did not started!")
         return False
 
     if test:  # test success
         return True
 
     try:
-        move_ee_z = rospy.ServiceProxy('move_ee_z', MoveEEZ)
-        resp = move_ee_z(dis, scale)
-        print("[SRVICE] Move ee z result:", resp.success)
+        move_ee = rospy.ServiceProxy('move_ee', MoveEE)
+        resp = move_ee(dis, axis, ref, scale)
+        print("[SRVICE] Move ee result:", resp.success)
         return resp.success
     except rospy.ServiceException, e:
-        print("[SRVICE] Move ee z service call failed: %s" % e)
+        print("[SRVICE] Move ee service call failed: %s" % e)
         return False
 
 
@@ -178,5 +180,6 @@ if __name__ == "__main__":
     # print("[SRVICE] set_vel_scaling result = %s" % set_vel_scaling(1.0))
     # print("[SRVICE] move_to_pose_named result = %s" % move_to_pose_named("home"))
 
-    print("[SRVICE] move_ee_z result = %s" % move_ee_z(0.05, 0.5))
+    # print("[SRVICE] move_ee result = %s" % move_ee(0.05, 0, "ee_link", 0.5))
+    # print("[SRVICE] move_ee result = %s" % move_ee(0.05, 0, "base_link", 0.5))
     
