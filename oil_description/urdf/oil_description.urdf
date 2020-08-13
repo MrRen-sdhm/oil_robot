@@ -15,7 +15,7 @@
       <inertia
         ixx="0.0953334118462338"
         ixy="1.10364074354538E-06"
-        ixz="-1.6924287473749E-07"
+        ixz="-1.20924287473749E-07"
         iyy="0.0953288626670654"
         iyz="2.11141199054294E-08"
         izz="0.156459291725264" />
@@ -97,8 +97,8 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-0.34"
-      upper="0.34"
+      lower="-0.42"
+      upper="0.42"
       effort="0"
       velocity="0" />
   </joint>
@@ -213,8 +213,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.34"
-      upper="0.34"
+      lower="-0.42"
+      upper="0.42"
       effort="0"
       velocity="0" />
   </joint>
@@ -485,6 +485,143 @@
       link="ee_link" />
     <child
       link="abutment_frame" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <!-- =====================  wall ========================= -->
+  <link name="front_wall">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.85 1.20" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 0 0.5" />
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.85 1.20" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="front_joint"
+    type="fixed">
+    <origin
+      xyz="0.32 -0.22 0.60"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_wall" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="back_wall">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.85 1.20" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 0 0.5" />
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.85 1.20" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="back_joint"
+    type="fixed">
+    <origin
+      xyz="-0.32 -0.22 0.60"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_wall" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="left_wall">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.6 0.01 1.20" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 0 0.5" />
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.6 0.01 1.20" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="left_joint"
+    type="fixed">
+    <origin
+      xyz="0.0 0.22 0.60"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_wall" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="right_wall">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.6 0.01 1.20" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 0 0.5" />
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.6 0.01 1.20" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="right_joint"
+    type="fixed">
+    <origin
+      xyz="0.0 -0.65 0.60"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_wall" />
     <axis
       xyz="0 0 0" />
   </joint>

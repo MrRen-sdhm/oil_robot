@@ -189,7 +189,7 @@ class OilPickup:
 
       wall_height = 1.2
       wall_size = 2*wall_height
-      color_a = 0.9
+      color_a = 0.5
 
       table_id = 'table'  
       # 设置桌面的高度
@@ -205,7 +205,7 @@ class OilPickup:
       table_pose.pose.position.z = wall_height / 2
       table_pose.pose.orientation.w = 1.0
       scene.add_box(table_id, table_pose, table_size)
-      self.setColor(table_id, 1.0, 1.0, 1.0, color_a)
+      self.setColor(table_id, 0.0, 0.0, 0.0, color_a)
 
       right_wall_id = 'right_wall'  
       # 设置right_wall的三维尺寸[长, 宽, 高]
@@ -219,7 +219,7 @@ class OilPickup:
       right_wall_pose.pose.position.z = wall_height / 2
       right_wall_pose.pose.orientation.w = 1.0
       scene.add_box(right_wall_id, right_wall_pose, right_wall_size)
-      self.setColor(right_wall_id, 1.0, 1.0, 1.0, color_a)
+      self.setColor(right_wall_id, 0.0, 0.0, 0.0, color_a)
 
       left_wall_id = 'left_wall'
       # 设置left_wall的三维尺寸[长, 宽, 高]
@@ -233,7 +233,7 @@ class OilPickup:
       left_wall_pose.pose.position.z = wall_height / 2
       left_wall_pose.pose.orientation.w = 1.0
       scene.add_box(left_wall_id, left_wall_pose, left_wall_size)
-      self.setColor(left_wall_id, 1.0, 1.0, 1.0, color_a)
+      self.setColor(left_wall_id, 0.0, 0.0, 0.0, color_a)
 
       back_wall_id = 'back_wall'  
       # 设置left_wall的三维尺寸[长, 宽, 高]
@@ -247,7 +247,7 @@ class OilPickup:
       back_wall_pose.pose.position.z = wall_height / 2
       back_wall_pose.pose.orientation.w = 1.0
       scene.add_box(back_wall_id, back_wall_pose, back_wall_size)
-      self.setColor(back_wall_id, 1.0, 1.0, 1.0, color_a)
+      self.setColor(back_wall_id, 0.0, 0.0, 0.0, color_a)
 
       # bottom_wall_id = 'bottom_wall'  
       # # 设置left_wall的三维尺寸[长, 宽, 高]

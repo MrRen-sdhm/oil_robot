@@ -824,7 +824,7 @@ class Ui_Form(object):
         self.lift_pose_button.setObjectName("lift_pose_button")
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         self.comboBox.setCurrentIndex(3)
         self.comboBox_rpy.setCurrentIndex(3)
         self.comboBox_xyz.setCurrentIndex(3)

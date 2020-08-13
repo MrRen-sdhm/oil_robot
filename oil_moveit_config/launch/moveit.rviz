@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1/Frames1
+        - /TF1
         - /TF1/Tree1
         - /MotionPlanning1
         - /MotionPlanning1/Planning Request1
@@ -47,9 +47,15 @@ Visualization Manager:
         All Enabled: false
         abutment_frame:
           Value: true
+        back_wall:
+          Value: false
         base_link:
           Value: true
         ee_link:
+          Value: false
+        front_wall:
+          Value: false
+        left_wall:
           Value: false
         link1:
           Value: false
@@ -65,13 +71,21 @@ Visualization Manager:
           Value: false
         link7:
           Value: false
-      Marker Scale: 1
+        right_wall:
+          Value: false
+      Marker Scale: 2
       Name: TF
       Show Arrows: false
       Show Axes: true
       Show Names: false
       Tree:
         base_link:
+          back_wall:
+            {}
+          front_wall:
+            {}
+          left_wall:
+            {}
           link1:
             link2:
               link3:
@@ -82,6 +96,8 @@ Visualization Manager:
                         ee_link:
                           abutment_frame:
                             {}
+          right_wall:
+            {}
       Update Interval: 0
       Value: true
     - Acceleration_Scaling_Factor: 1
@@ -121,6 +137,11 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          back_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           base_link:
             Alpha: 1
             Show Axes: false
@@ -130,6 +151,16 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          front_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          left_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           link1:
             Alpha: 1
             Show Axes: false
@@ -161,6 +192,11 @@ Visualization Manager:
             Show Trail: false
             Value: true
           link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          right_wall:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -214,6 +250,11 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          back_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           base_link:
             Alpha: 1
             Show Axes: false
@@ -223,6 +264,16 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          front_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          left_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           link1:
             Alpha: 1
             Show Axes: false
@@ -258,6 +309,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          right_wall:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -279,7 +335,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.96247196
+      Distance: 4.73831367
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -294,10 +350,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.25480026
+      Pitch: 0.0298000239
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 3.20352864
+      Yaw: 1.59853315
     Saved: ~
 Window Geometry:
   Displays:
